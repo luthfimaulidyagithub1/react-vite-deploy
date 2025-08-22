@@ -18,6 +18,14 @@ const dashboard = {
       url: '/dashboard/default',
       icon: icons.IconDashboard,
       breadcrumbs: false
+    },
+    {
+      id: 'beranda',
+      title: 'Beranda',
+      type: 'item',
+      url: '/beranda',
+      icon: icons.IconDashboard,
+      breadcrumbs: false
     }
   ]
 };

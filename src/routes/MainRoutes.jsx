@@ -6,6 +6,8 @@ import Loadable from 'ui-component/Loadable';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
+const Beranda = Loadable(lazy(() => import('views/dashboard/Default/Beranda')));
+
 
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
@@ -33,6 +35,10 @@ const MainRoutes = {
           element: <DashboardDefault />
         }
       ]
+    },
+    {
+      path: 'beranda',
+      element: <Beranda />
     },
     {
       path: 'typography',
