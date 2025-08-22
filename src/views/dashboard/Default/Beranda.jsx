@@ -1,32 +1,59 @@
 import React, { useEffect, useState } from "react";
 import Map, { Source, Layer, Popup } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Box, FormControl, InputLabel, Select, MenuItem, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Paper,
+  Typography,
+} from "@mui/material";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  Legend,
+  LabelList
+} from "recharts";
 
 export default function BubbleMapKecamatan() {
   const [data, setData] = useState(null);
+  const [json, setJson] = useState([]);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState("Semua");
   const [kecamatanList, setKecamatanList] = useState([]);
 
   useEffect(() => {
-    fetch("https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/latlong%20wil.json", {
+    fetch(
+      "https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/latlong%20wil.json",
+      {
         headers: {
-          "Accept": "application/vnd.github.v3.raw"
-        }
-      })
+          Accept: "application/vnd.github.v3.raw",
+        },
+      }
+    )
       .then((res) => res.json())
       .then((json) => {
-        console.log("Data JSON:", json);
+        setJson(json);
+
         const kecamatanMap = json.reduce((acc, d) => {
           if (!acc[d.kecamatan]) {
             acc[d.kecamatan] = {
               kecamatan: d.kecamatan,
               coord: d["latitude,longitude kec"],
               totalPenduduk: 0,
+              totalKK: 0,
             };
           }
           acc[d.kecamatan].totalPenduduk += +d.penduduk;
+          acc[d.kecamatan].totalKK += +d.kk;
           return acc;
         }, {});
 
@@ -35,7 +62,11 @@ export default function BubbleMapKecamatan() {
           return {
             type: "Feature",
             geometry: { type: "Point", coordinates: [lon, lat] },
-            properties: { kecamatan: d.kecamatan, penduduk: d.totalPenduduk },
+            properties: {
+              kecamatan: d.kecamatan,
+              penduduk: d.totalPenduduk,
+              kk: d.totalKK,
+            },
           };
         });
 
@@ -50,7 +81,15 @@ export default function BubbleMapKecamatan() {
     type: "circle",
     source: "penduduk",
     paint: {
-      "circle-radius": ["interpolate", ["linear"], ["get", "penduduk"], 1000, 10, 10000, 40],
+      "circle-radius": [
+        "interpolate",
+        ["linear"],
+        ["get", "penduduk"],
+        1000,
+        10,
+        10000,
+        40,
+      ],
       "circle-color": "#1976d2",
       "circle-opacity": 0.6,
       "circle-stroke-width": 1,
@@ -62,9 +101,26 @@ export default function BubbleMapKecamatan() {
         : ["==", ["get", "kecamatan"], selectedKecamatan],
   };
 
+  const barChartData =
+    selectedKecamatan === "Semua"
+      ? (data?.features || []).map((f) => ({
+          kecamatan: f.properties.kecamatan,
+          kk: json
+            .filter((d) => d.kecamatan === f.properties.kecamatan)
+            .reduce((sum, d) => sum + +d.kk, 0),
+        }))
+      : [
+          {
+            kecamatan: selectedKecamatan,
+            kk: json
+              .filter((d) => d.kecamatan === selectedKecamatan)
+              .reduce((sum, d) => sum + +d.kk, 0),
+          },
+        ];
+
   return (
-    <Box sx={{ height: "100vh", width: "100%", position: "relative" }}>
-      {/* 🔹 Filter Kecamatan pakai MUI */}
+    <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
+      {/* 🔹 Filter Dropdown */}
       <Paper
         sx={{
           position: "absolute",
@@ -94,10 +150,11 @@ export default function BubbleMapKecamatan() {
         </FormControl>
       </Paper>
 
+      {/* 🔹 Peta */}
       <Map
         mapLib={import("maplibre-gl")}
         initialViewState={{ latitude: -9.7, longitude: 119.3, zoom: 9 }}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "70vh" }}
         mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
         interactiveLayerIds={["bubbles"]}
         onMouseMove={(e) => {
@@ -130,7 +187,9 @@ export default function BubbleMapKecamatan() {
             anchor="top"
           >
             <Paper sx={{ p: 1, borderRadius: 1 }}>
-              <Typography variant="subtitle2">{hoverInfo.kecamatan}</Typography>
+              <Typography variant="subtitle2">
+                {hoverInfo.kecamatan}
+              </Typography>
               <Typography variant="body2">
                 Penduduk: {hoverInfo.penduduk.toLocaleString("id-ID")}
               </Typography>
@@ -138,6 +197,25 @@ export default function BubbleMapKecamatan() {
           </Popup>
         )}
       </Map>
+
+      {/* 🔹 Bar Chart */}
+      <Paper sx={{ p: 2, m: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Jumlah KK per Kecamatan
+        </Typography>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={barChartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="kecamatan" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="kk" fill="#1976d2" name="Jumlah KK">
+      <LabelList dataKey="kk" position="top" formatter={(value) => value.toLocaleString("id-ID")}/>
+    </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </Paper>
     </Box>
   );
 }
