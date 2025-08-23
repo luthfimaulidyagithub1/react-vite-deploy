@@ -81,10 +81,7 @@ export default function PopulationDensityCard({ isLoading }) {
         <Tooltip
           title={
             year
-              ? `Pada tahun ${year}, rata-rata terdapat sekitar ${density.toLocaleString('id-ID', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2
-                })} penduduk yang tinggal di setiap 1 km² wilayah Kab. Sumba Barat.`
+              ? `Pada tahun ${year}, rata-rata terdapat sekitar ${Math.ceil(density).toLocaleString('id-ID')} penduduk yang tinggal di setiap 1 km² wilayah Kab. Sumba Barat.`
               : ''
           }
           arrow
