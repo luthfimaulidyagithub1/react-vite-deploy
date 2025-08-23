@@ -8,7 +8,6 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const Beranda = Loadable(lazy(() => import('views/dashboard/Default/Beranda')));
 
-
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -28,7 +27,7 @@ const MainRoutes = {
       element: <DashboardDefault />
     },
     {
-      path: 'dashboard',
+      path: 'beranda',
       children: [
         {
           path: 'default',
@@ -36,10 +35,10 @@ const MainRoutes = {
         }
       ]
     },
-    {
-      path: 'beranda',
-      element: <Beranda />
-    },
+    // {
+    //   path: 'beranda',
+    //   element: <Beranda />
+    // },
     {
       path: 'typography',
       element: <UtilsTypography />

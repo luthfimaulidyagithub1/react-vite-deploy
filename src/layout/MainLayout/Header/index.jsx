@@ -3,17 +3,17 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 
 // project imports
 import LogoSection from '../LogoSection';
-import SearchSection from './SearchSection';
 import ProfileSection from './ProfileSection';
-import NotificationSection from './NotificationSection';
-
+import SearchSection from './SearchSection';
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // assets
 import { IconMenu2 } from '@tabler/icons-react';
+import User1 from 'assets/images/users/user-round.svg';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -52,16 +52,64 @@ export default function Header() {
         </Avatar>
       </Box>
 
-      {/* header search */}
-      <SearchSection />
-      <Box sx={{ flexGrow: 1 }} />
+      {/* button Unduh Data Tabel */}
+      <Chip
+        sx={{
+          ml: 2,
+          height: '48px',
+          alignItems: 'center',
+          borderRadius: '27px',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          bgcolor: theme.palette.primary[200],
+          color: theme.palette.primary.contrastText,
+          '&:hover': {
+            bgcolor: theme.palette.primary.dark
+          },
+          '& .MuiChip-label': {
+            lineHeight: 1
+          }
+        }}
+        label=" Lihat Data Tabel"
+        component="a"
+        href="https://docs.google.com/spreadsheets/d/1ZVlXo3W5Oy8iHjPK-IRhUrMJTt_qOrGBFpimrcvbbuw/edit?gid=1396414102#gid=1396414102"
+        target="_blank"
+        aria-label="Lihat Data Tabel"
+      />
+      {/* space */}
       <Box sx={{ flexGrow: 1 }} />
 
-      {/* notification */}
-      <NotificationSection />
+      {/* button Unduh Publikasi BPS */}
+      <Chip
+        sx={{
+          ml: 2,
+          height: '48px',
+          alignItems: 'center',
+          borderRadius: '27px',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          bgcolor: theme.palette.secondary[200],
+          color: theme.palette.primary.contrastText,
+          '&:hover': {
+            bgcolor: theme.palette.secondary.dark
+          },
+          '& .MuiChip-label': {
+            lineHeight: 1
+          }
+        }}
+        label="Unduh Publikasi BPS"
+        component="a"
+        href="https://sumbabaratkab.bps.go.id/id/publication"
+        target="_blank"
+        aria-label="Unduh Publikasi BPS"
+      />
+
+      {/* space */}
+      {/* <Box sx={{ flexGrow: 0.5 }} /> */}
+      {/* profile */}
 
       {/* profile */}
-      <ProfileSection />
+      {/* <ProfileSection /> */}
     </>
   );
 }

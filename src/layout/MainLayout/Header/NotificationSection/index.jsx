@@ -24,7 +24,7 @@ import Transitions from 'ui-component/extended/Transitions';
 import NotificationList from './NotificationList';
 
 // assets
-import { IconBell } from '@tabler/icons-react';
+// import { IconBell } from '@tabler/icons-react';
 
 // notification status options
 const status = [
@@ -85,7 +85,7 @@ export default function NotificationSection() {
 
   return (
     <>
-      <Box sx={{ ml: 2 }}>
+      {/* <Box sx={{ ml: 2 }}>
         <Avatar
           variant="rounded"
           sx={{
@@ -107,7 +107,7 @@ export default function NotificationSection() {
         >
           <IconBell stroke={1.5} size="20px" />
         </Avatar>
-      </Box>
+      </Box> */}
       <Popper
         placement={downMD ? 'bottom' : 'bottom-end'}
         open={open}
@@ -124,7 +124,7 @@ export default function NotificationSection() {
           }
         ]}
       >
-        {({ TransitionProps }) => (
+        {/* {({ TransitionProps }) => (
           <ClickAwayListener onClickAway={handleClose}>
             <Transitions position={downMD ? 'top' : 'top-right'} in={open} {...TransitionProps}>
               <Paper>
@@ -192,7 +192,7 @@ export default function NotificationSection() {
               </Paper>
             </Transitions>
           </ClickAwayListener>
-        )}
+        )} */}
       </Popper>
     </>
   );

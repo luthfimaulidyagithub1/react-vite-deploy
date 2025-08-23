@@ -8,40 +8,77 @@ import Typography from '@mui/material/Typography';
 export default function Footer() {
   return (
     <Stack
-      direction="row"
+      direction={{ xs: 'column', md: 'row' }}
       sx={{
-        alignItems: 'center',
+        alignItems: { xs: 'flex-start', md: 'flex-start' },
         justifyContent: 'space-between',
+        flexWrap: 'wrap',
         pt: 3,
-        mt: 'auto'
+        pb: 2, // lebih rapat ke bawah
+        px: { xs: 2, md: 6 },
+        mt: 'auto',
+        bgcolor: 'grey.100'
       }}
+      spacing={2}
     >
-      <Typography variant="caption">
-        &copy; All rights reserved{' '}
-        <Typography component={Link} href="https://codedthemes.com/about-us/" underline="hover" target="_blank" color="secondary.main">
-          CodedThemes
+      {/* Kiri: Informasi BPS */}
+      <Stack direction="column" spacing={0.6} sx={{ maxWidth: 600 }}>
+        <Typography variant="caption" sx={{ color: 'grey.700', fontWeight: 600, lineHeight: 1.6 }}>
+          Badan Pusat Statistik Kabupaten Sumba Barat <i>(Statistics of Sumba Barat Regency)</i>
         </Typography>
-      </Typography>
-      <Stack direction="row" sx={{ gap: 1.5, alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="caption" sx={{ color: 'grey.600', lineHeight: 1.6 }}>
+          Jl. Wee Karou, Kec. Loli, Kabupaten Sumba Barat, Nusa Tenggara Timur
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'grey.600', lineHeight: 1.6 }}>
+          Telp : (0387) 21256
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'grey.600', lineHeight: 1.6 }}>
+          Email: bps5301@bps.go.id
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'grey.600', lineHeight: 1.6 }}>
+          Website:{' '}
+          <Link
+            component={RouterLink}
+            to="https://sumbabaratkab.bps.go.id"
+            underline="hover"
+            target="_blank"
+            sx={{ color: 'primary.main', fontWeight: 500 }}
+          >
+            https://sumbabaratkab.bps.go.id
+          </Link>
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'grey.700', fontWeight: 600, lineHeight: 1.6 }}>
+          Hak Cipta © Badan Pusat Statistik Kabupaten Sumba Barat
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{ color: 'grey.600', lineHeight: 1.6, mb: 0 }} // rapat tanpa margin bawah
+        >
+          Semua Hak Dilindungi
+        </Typography>
+      </Stack>
+
+      {/* Kanan: link tambahan */}
+      <Stack direction="row" sx={{ gap: 2, alignItems: 'flex-start', justifyContent: 'flex-end' }}>
         <Link
           component={RouterLink}
-          to="https://x.com/codedthemes"
+          to="https://sumbabaratkab.bps.go.id"
           underline="hover"
           target="_blank"
           variant="caption"
-          color="text.primary"
+          sx={{ color: 'primary.main', fontWeight: 500 }}
         >
-          Twitter
+          Website
         </Link>
         <Link
           component={RouterLink}
-          to="https://discord.com/invite/p2E2WhCb6s"
+          to="mailto:bps5301@bps.go.id"
           underline="hover"
           target="_blank"
           variant="caption"
-          color="text.primary"
+          sx={{ color: 'primary.main', fontWeight: 500 }}
         >
-          Discord
+          Email
         </Link>
       </Stack>
     </Stack>

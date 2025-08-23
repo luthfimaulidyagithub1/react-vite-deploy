@@ -120,7 +120,7 @@ export default function ProfileSection() {
           }
         ]}
       >
-        {({ TransitionProps }) => (
+        {/* {({ TransitionProps }) => (
           <ClickAwayListener onClickAway={handleClose}>
             <Transitions in={open} {...TransitionProps}>
               <Paper>
@@ -256,7 +256,7 @@ export default function ProfileSection() {
               </Paper>
             </Transitions>
           </ClickAwayListener>
-        )}
+        )} */}
       </Popper>
     </>
   );

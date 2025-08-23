@@ -13,20 +13,20 @@ const dashboard = {
   children: [
     {
       id: 'default',
-      title: 'Dashboard',
-      type: 'item',
-      url: '/dashboard/default',
-      icon: icons.IconDashboard,
-      breadcrumbs: false
-    },
-    {
-      id: 'beranda',
       title: 'Beranda',
       type: 'item',
-      url: '/beranda',
+      url: '/beranda/default',
       icon: icons.IconDashboard,
       breadcrumbs: false
     }
+    // {
+    //   id: 'beranda',
+    //   title: 'Beranda',
+    //   type: 'item',
+    //   url: '/beranda',
+    //   icon: icons.IconDashboard,
+    //   breadcrumbs: false
+    // }
   ]
 };
 
