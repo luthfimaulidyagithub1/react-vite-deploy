@@ -10,7 +10,7 @@ import TotalOrderLineChartCard from './TotalOrderLineChartCard';
 import TotalIncomeDarkCard from '../../../ui-component/cards/TotalIncomeDarkCard';
 import TotalIncomeLightCard from '../../../ui-component/cards/TotalIncomeLightCard';
 import TotalGrowthBarChart from './TotalGrowthBarChart';
-import Beranda from './beranda'; // <-- import Beranda
+import Beranda from './Beranda'; // <-- import Beranda
 import PopulationCard from './PopulationCard';
 import KKCard from './KKCard';
 import PopulationDensityCard from './PopulationDensityCard';
