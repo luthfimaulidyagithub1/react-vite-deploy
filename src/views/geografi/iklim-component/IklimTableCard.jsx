@@ -1,5 +1,6 @@
 // src/ui-component/cards/statistik/IklimTableCard.jsx
 import React, { useEffect, useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import {
   Card,
@@ -24,6 +25,7 @@ const normalize = (str = '') =>
 export default function IklimTableCard({ data = [], tahun, indikator = '', isLoading = false }) {
   const [tableData, setTableData] = useState([]);
   const [sumber, setSumber] = useState(null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (!Array.isArray(data) || data.length === 0 || !indikator) return;
@@ -59,13 +61,13 @@ export default function IklimTableCard({ data = [], tahun, indikator = '', isLoa
   return (
     <Card
       sx={{
-        // border: (theme) => `2px solid ${theme.palette.grey[600]}`,
+        // border: (theme) => `2px solid ${theme.palette.grey[200]}`,
         borderRadius: 2,
         height: '100%'
       }}
     >
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: 'grey[600]' }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary }}>
           Tabel {indikator} per Bulan di Stasiun Umbu Mehang Kunda, {tahun}
         </Typography>
 
@@ -117,13 +119,13 @@ export default function IklimTableCard({ data = [], tahun, indikator = '', isLoa
                     >
                       <TableCell sx={{ fontSize: '0.75rem' }}>{row.bulan}</TableCell>
                       <TableCell align="center" sx={{ fontSize: '0.75rem' }}>
-                        {row.min != null ? row.min.toFixed(1) : '-'}
+                        {row.min != null ? row.min.toFixed(2) : '-'}
                       </TableCell>
                       <TableCell align="center" sx={{ fontSize: '0.75rem' }}>
-                        {row.rata != null ? row.rata.toFixed(1) : '-'}
+                        {row.rata != null ? row.rata.toFixed(2) : '-'}
                       </TableCell>
                       <TableCell align="center" sx={{ fontSize: '0.75rem' }}>
-                        {row.max != null ? row.max.toFixed(1) : '-'}
+                        {row.max != null ? row.max.toFixed(2) : '-'}
                       </TableCell>
                     </TableRow>
                   ))}

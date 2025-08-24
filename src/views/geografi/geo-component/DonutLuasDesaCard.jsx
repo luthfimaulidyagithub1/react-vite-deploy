@@ -105,7 +105,7 @@ export default function DonutLuasDesaCard({ isLoading, data, tahun, kecamatan })
   return (
     <Card
       sx={{
-        border: (theme) => `2px solid ${theme.palette.grey[600]}`,
+        border: (theme) => `2px solid ${theme.palette.grey[200]}`,
         borderRadius: 2,
         height: '100%'
       }}

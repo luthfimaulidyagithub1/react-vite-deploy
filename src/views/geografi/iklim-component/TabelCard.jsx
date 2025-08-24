@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useTheme } from '@mui/material/styles';
 import { Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 export default function TabelCard({ isLoading, data, tahun }) {
   const [tableData, setTableData] = useState([]);
   const [sumber, setSumber] = useState('');
+  const theme = useTheme();
 
   useEffect(() => {
     if (!data || data.length === 0) {
@@ -32,13 +34,13 @@ export default function TabelCard({ isLoading, data, tahun }) {
   return (
     <Card
       sx={{
-        // border: (theme) => `2px solid ${theme.palette.grey[600]}`,
+        // border: (theme) => `2px solid ${theme.palette.grey[200]}`,
         borderRadius: 2,
         height: '100%'
       }}
     >
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: 'grey[600]' }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary }}>
           Tabel Curah Hujan, Hari Hujan, dan Penyinaran Matahari di Stasiun Umbu Mehang Kunda, {tahun}
         </Typography>
 
@@ -85,13 +87,13 @@ export default function TabelCard({ isLoading, data, tahun }) {
                     >
                       <TableCell sx={{ fontSize: '0.75rem' }}>{row.bulan}</TableCell>
                       <TableCell align="right" sx={{ fontSize: '0.75rem' }}>
-                        {row['curah hujan (mm)'] ?? '-'}
+                        {Number(row['curah hujan (mm)']).toFixed(2) ?? '-'}
                       </TableCell>
                       <TableCell align="right" sx={{ fontSize: '0.75rem' }}>
                         {row['hari hujan (hari)'] ?? '-'}
                       </TableCell>
                       <TableCell align="right" sx={{ fontSize: '0.75rem' }}>
-                        {row['penyinaran matahari'] ?? '-'}
+                        {Number(row['penyinaran matahari']).toFixed(2) ?? '-'}
                       </TableCell>
                     </TableRow>
                   ))}

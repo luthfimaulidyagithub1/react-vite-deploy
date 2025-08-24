@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 export default function TabelLuasDesaCard({ isLoading, data, tahun, kecamatan }) {
   const [tableData, setTableData] = useState([]);
   const [sumber, setSumber] = useState('');
+  const theme = useTheme();
 
   useEffect(() => {
     if (!data || data.length === 0) {
@@ -36,13 +38,13 @@ export default function TabelLuasDesaCard({ isLoading, data, tahun, kecamatan })
   return (
     <Card
       sx={{
-        border: (theme) => `2px solid ${theme.palette.grey[600]}`,
+        border: (theme) => `2px solid ${theme.palette.grey[200]}`,
         borderRadius: 2,
         height: '100%'
       }}
     >
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: 'grey[600]' }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary }}>
           Tabel Luas Desa di {kecamatan}, {tahun}
         </Typography>
 

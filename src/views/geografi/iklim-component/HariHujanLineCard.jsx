@@ -41,7 +41,7 @@ export default function HariHujanLineCard({ data = [], tahun, isLoading }) {
   return (
     <Card
       sx={{
-        // border: (theme) => `2px solid ${theme.palette.grey[600]}`,
+        // border: (theme) => `2px solid ${theme.palette.grey[200]}`,
         borderRadius: 2,
         height: '100%'
       }}
@@ -71,7 +71,7 @@ export default function HariHujanLineCard({ data = [], tahun, isLoading }) {
             <Box sx={{ width: '100%', height: 170 }}>
               <ResponsiveContainer>
                 <LineChart data={chartData} margin={{ right: 10, left: 10 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
+                  <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="#ddd" />
                   <XAxis dataKey="bulan" tick={{ fontSize: 12 }} interval={0} angle={-40} textAnchor="end" height={60} />
                   <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} />
                   <Tooltip
@@ -99,7 +99,7 @@ export default function HariHujanLineCard({ data = [], tahun, isLoading }) {
                                   color: theme.palette.primary.dark
                                 }}
                               >
-                                hari hujan: {p.value != null ? p.value.toFixed(1) : '-'} hari
+                                hari hujan: {p.value != null ? p.value.toFixed(0) : '-'} hari
                               </Typography>
                             ))}
                           </Box>

@@ -54,6 +54,11 @@ export default function AnginRataCard({ isLoading, data, tahun }) {
   const [anginRata, setAnginRata] = useState(null);
   const [sumber, setSumber] = useState(null);
 
+  const handleClick = () => {
+    setOpen(true);
+    setTimeout(() => setOpen(false), 2000); // otomatis nutup setelah 2 detik
+  };
+
   useEffect(() => {
     if (!data || data.length === 0) return;
 
@@ -122,11 +127,7 @@ export default function AnginRataCard({ isLoading, data, tahun }) {
                             padding: '2px 6px',
                             minWidth: 'unset'
                           }}
-                          onClick={() => {
-                            if (sumber && sumber.startsWith('http')) {
-                              window.open(sumber, '_blank');
-                            }
-                          }}
+                          onClick={handleClick}
                         >
                           Sumber
                         </Button>

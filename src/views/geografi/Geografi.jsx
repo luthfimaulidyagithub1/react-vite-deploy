@@ -65,7 +65,8 @@ export default function Geografi() {
   // Ambil data JSON
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/1.1.1%20KDA.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+      headers: { Accept: 'application/vnd.github.v3.raw' },
+      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {
@@ -96,7 +97,8 @@ export default function Geografi() {
   // Ambil data 1.1 KDA
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/1.1.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+      headers: { Accept: 'application/vnd.github.v3.raw' },
+      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => setjson11(jsonData));
@@ -105,7 +107,8 @@ export default function Geografi() {
   // Ambil data 1.2 KDA
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/1.2.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+      headers: { Accept: 'application/vnd.github.v3.raw' },
+      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => setjson12(jsonData));
@@ -114,7 +117,8 @@ export default function Geografi() {
   // Ambil data 1.1.2 KDA
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/1.1.2%20KDA.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+      headers: { Accept: 'application/vnd.github.v3.raw' },
+      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => setjson112(jsonData));

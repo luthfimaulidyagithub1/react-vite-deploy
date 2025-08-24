@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 
 export default function BarJarakDesaCard({ isLoading, data, tahun, kecamatan }) {
   const [chartData, setChartData] = useState([]);
   const [sumber, setSumber] = useState('');
+  const theme = useTheme();
 
   useEffect(() => {
     if (!data || data.length === 0) {
@@ -47,22 +49,21 @@ export default function BarJarakDesaCard({ isLoading, data, tahun, kecamatan }) 
       }}
     >
       <CardContent sx={{ height: '100%' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary }}>
           Jarak Desa ke Ibukota Kecamatan & Kabupaten di {kecamatan}, {tahun}
         </Typography>
 
         {chartData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={350}>
+          <ResponsiveContainer width="100%" height={400}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />{' '}
               <XAxis dataKey="name" angle={-45} textAnchor="end" height={90} interval={0} tick={{ fontSize: 11 }} />
               <YAxis />
               <Tooltip formatter={(value) => `${value} km`} />
-              <Legend verticalAlign="top" wrapperStyle={{ fontSize: '0.8rem' }} />
+              <Legend verticalAlign="top" wrapperStyle={{ fontSize: '0.8rem', paddingBottom: '20px' }} />
               <Bar dataKey="kabupaten" fill="#9c27b0" name="Jarak ke Ibukota Kab. (km)">
                 <LabelList dataKey="kabupaten" position="top" formatter={(val) => `${val}`} fontSize={10} />
               </Bar>
-
               <Bar dataKey="kecamatan" fill="#1976d2" name="Jarak ke Ibukota Kec. (km)">
                 <LabelList dataKey="kecamatan" position="top" formatter={(val) => `${val}`} fontSize={10} />
               </Bar>

@@ -51,7 +51,8 @@ export default function TotalAreaCard({ isLoading }) {
 
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/latlong_wil.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+      headers: { Accept: 'application/vnd.github.v3.raw' },
+      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {

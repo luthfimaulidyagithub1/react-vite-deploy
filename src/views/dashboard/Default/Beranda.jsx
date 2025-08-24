@@ -368,7 +368,7 @@ export default function Beranda({ isLoading }) {
               </Typography>
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={barChartData} margin={{ top: 40, right: 30, left: 20, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="kecamatan" />
                   <YAxis />
                   <ReTooltip formatter={(value, name) => [value.toLocaleString('id-ID'), name]} />

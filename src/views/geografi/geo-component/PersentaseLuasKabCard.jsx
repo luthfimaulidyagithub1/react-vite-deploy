@@ -53,6 +53,11 @@ export default function PersentaseLuasKabCard({ isLoading, data, tahun, kecamata
   const [persentase, setPersentase] = useState(0);
   const [sumber, setSumber] = useState(null);
 
+  const handleClick = () => {
+    setOpen(true);
+    setTimeout(() => setOpen(false), 2000); // otomatis nutup setelah 2 detik
+  };
+
   useEffect(() => {
     if (!data || data.length === 0) return;
 
@@ -131,11 +136,7 @@ export default function PersentaseLuasKabCard({ isLoading, data, tahun, kecamata
                             padding: '2px 6px',
                             minWidth: 'unset'
                           }}
-                          onClick={() => {
-                            if (sumber && sumber.startsWith('http')) {
-                              window.open(sumber, '_blank');
-                            }
-                          }}
+                          onClick={handleClick}
                         >
                           Sumber
                         </Button>

@@ -53,6 +53,11 @@ export default function IbukotaKecCard({ isLoading, data, tahun, kecamatan }) {
   const [ibukotaList, setIbukotaList] = useState([]);
   const [sumber, setSumber] = useState(null);
 
+  const handleClick = () => {
+    setOpen(true);
+    setTimeout(() => setOpen(false), 2000); // otomatis nutup setelah 2 detik
+  };
+
   useEffect(() => {
     if (!data || data.length === 0) return;
 
@@ -125,11 +130,7 @@ export default function IbukotaKecCard({ isLoading, data, tahun, kecamatan }) {
                             padding: '2px 6px',
                             minWidth: 'unset'
                           }}
-                          onClick={() => {
-                            if (sumber && sumber.startsWith('http')) {
-                              window.open(sumber, '_blank');
-                            }
-                          }}
+                          onClick={handleClick}
                         >
                           Sumber
                         </Button>
