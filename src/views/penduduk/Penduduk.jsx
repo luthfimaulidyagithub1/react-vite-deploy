@@ -58,8 +58,8 @@ export default function Penduduk() {
   // Ambil data 3.1 dan 3.2 JSON
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/3.1%20dan%203.2.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' },
-      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+      headers: { Accept: 'application/vnd.github.v3.raw' }
+      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {

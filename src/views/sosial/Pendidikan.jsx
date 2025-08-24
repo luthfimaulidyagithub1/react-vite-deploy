@@ -67,8 +67,8 @@ export default function Pendidikan() {
   // Ambil data 4.1.1 JSON
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/4.1.1.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' },
-      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+      headers: { Accept: 'application/vnd.github.v3.raw' }
+      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {
@@ -95,8 +95,8 @@ export default function Pendidikan() {
   // Ambil data 4.1.2-4.1.4
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/4.1.2-4.1.4.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' },
-      Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+      headers: { Accept: 'application/vnd.github.v3.raw' }
+      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => setJson412(jsonData));
