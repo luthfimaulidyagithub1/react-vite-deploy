@@ -356,7 +356,7 @@ export default function Beranda({ isLoading }) {
 
             {/* Sumber Map */}
             {sumberData.length > 0 && (
-              <Typography variant="caption" align="right" sx={{ mb: 3, display: 'block', fontStyle: 'italic' }}>
+              <Typography variant="caption" align="left" sx={{ mb: 3, display: 'block', fontStyle: 'italic' }}>
                 Sumber: BPS dan {sumberData.join(', ')}
               </Typography>
             )}
@@ -386,7 +386,7 @@ export default function Beranda({ isLoading }) {
 
             {/* Sumber Bar Chart */}
             {sumberData.length > 0 && (
-              <Typography variant="caption" align="right" sx={{ display: 'block', fontStyle: 'italic', mb: 2 }}>
+              <Typography variant="caption" align="left" sx={{ display: 'block', fontStyle: 'italic', mb: 2 }}>
                 Sumber: BPS dan {sumberData.join(', ')}
               </Typography>
             )}

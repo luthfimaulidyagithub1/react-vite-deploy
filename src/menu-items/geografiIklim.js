@@ -1,7 +1,8 @@
 // assets
 import { IconWorld } from '@tabler/icons-react';
+import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined';
 
-const icons = { IconWorld };
+const icons = { IconWorld, CloudOutlinedIcon };
 
 const geografiIklim = {
   id: 'geografi-iklim',
@@ -27,7 +28,7 @@ const geografiIklim = {
           title: 'Iklim',
           type: 'item',
           url: '/statistik/iklim',
-          icon: icons.IconWorld,
+          icon: icons.CloudOutlinedIcon,
           breadcrumbs: false
         }
       ]

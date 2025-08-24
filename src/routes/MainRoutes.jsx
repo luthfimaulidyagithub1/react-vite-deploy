@@ -8,6 +8,12 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const Beranda = Loadable(lazy(() => import('views/dashboard/Default/Beranda')));
 
+// geografi routing
+const Geografi = Loadable(lazy(() => import('views/geografi/Geografi')));
+
+// iklim routing
+const Iklim = Loadable(lazy(() => import('views/geografi/Iklim')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -39,6 +45,14 @@ const MainRoutes = {
     //   path: 'beranda',
     //   element: <Beranda />
     // },
+    {
+      path: 'statistik/geografi',
+      element: <Geografi />
+    },
+    {
+      path: 'statistik/iklim',
+      element: <Iklim />
+    },
     {
       path: 'typography',
       element: <UtilsTypography />

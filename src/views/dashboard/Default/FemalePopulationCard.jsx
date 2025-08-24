@@ -7,25 +7,26 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
-import GroupsIcon from '@mui/icons-material/Groups'; // Ikon untuk KK
+import FemaleIcon from '@mui/icons-material/Female';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
 
-export default function KKCard({ isLoading }) {
+export default function FemalePopulationCard({ isLoading }) {
   const theme = useTheme();
-  const [totalKK, setTotalKK] = useState(0);
+  const [malePopulation, setMalePopulation] = useState(0);
 
-  // Fetch data dan hitung total KK
+  // Fetch data dan hitung jumlah penduduk perempuan
   useEffect(() => {
     fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/latlong_wil.json', {
       headers: { Accept: 'application/vnd.github.v3.raw' }
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        const total = jsonData.reduce((acc, curr) => acc + Number(curr.kk), 0);
-        setTotalKK(total);
+        // Asumsi tiap item punya field "penduduk perempuan"
+        const total = jsonData.reduce((acc, curr) => acc + Number(curr['penduduk perempuan'] || 0), 0);
+        setMalePopulation(total);
       });
   }, []);
 
@@ -38,8 +39,8 @@ export default function KKCard({ isLoading }) {
           border={false}
           content={false}
           sx={{
-            bgcolor: 'success.main',
-            color: '#fff',
+            bgcolor: theme.palette.orange.dark, // Biru muda
+            color: theme.palette.orange.light,
             overflow: 'hidden',
             position: 'relative',
             textAlign: 'center',
@@ -48,7 +49,7 @@ export default function KKCard({ isLoading }) {
               position: 'absolute',
               width: 210,
               height: 210,
-              background: theme.palette.success.dark,
+              background: theme.palette.orange.main,
               borderRadius: '50%',
               top: { xs: -85 },
               right: { xs: -95 }
@@ -58,7 +59,7 @@ export default function KKCard({ isLoading }) {
               position: 'absolute',
               width: 210,
               height: 210,
-              background: theme.palette.success.dark,
+              background: theme.palette.orange.main,
               borderRadius: '50%',
               top: { xs: -125 },
               right: { xs: -15 },
@@ -74,21 +75,23 @@ export default function KKCard({ isLoading }) {
                   sx={{
                     ...theme.typography.commonAvatar,
                     ...theme.typography.largeAvatar,
-                    bgcolor: 'success.dark',
+                    bgcolor: theme.palette.orange.main,
                     mb: 1,
-                    color: '#fff' // Warna icon putih
+                    color: '#fff'
                   }}
                 >
-                  <GroupsIcon fontSize="large" />
+                  <FemaleIcon fontSize="large" />
                 </Avatar>
               </Grid>
 
               <Grid>
-                <Typography sx={{ fontSize: '2rem', fontWeight: 500 }}>{totalKK.toLocaleString('id-ID')}</Typography>
+                <Typography sx={{ fontSize: '2rem', fontWeight: 600 }}>{malePopulation.toLocaleString('id-ID')}</Typography>
               </Grid>
 
               <Grid>
-                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: 'success.light' }}>Jumlah KK Kab. Sumba Barat</Typography>
+                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: theme.palette.orange.light }}>
+                  Penduduk perempuan Kab. Sumba Barat
+                </Typography>
               </Grid>
             </Grid>
           </Box>
@@ -98,6 +101,6 @@ export default function KKCard({ isLoading }) {
   );
 }
 
-KKCard.propTypes = {
+FemalePopulationCard.propTypes = {
   isLoading: PropTypes.bool
 };
