@@ -7,6 +7,9 @@ import { Grid, Box, CardContent, Paper, Typography, FormControl, Select, MenuIte
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
+import GarisKemiskinanLineCard from './kemiskinan-component/GarisKemiskinanLineCard';
+import PendudukMiskinLineCard from './kemiskinan-component/PendudukMiskinLineCard';
+import IndeksLineChart from './kemiskinan-component/IndeksLineChart';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -33,10 +36,8 @@ import {
 export default function Kemiskinan() {
   const [isLoading, setLoading] = useState(true);
   const mapRef = useRef();
-  // json untuk 4.2.1
-  const [json421, setJson421] = useState([]);
-  // json untuk 4.2.2 KDA
-  const [json422, setJson422] = useState([]);
+  // json untuk 4.4.1
+  const [json441, setJson441] = useState([]);
 
   const [tahunList, setTahunList] = useState([]);
   const [tahun, setTahun] = useState('');
@@ -47,42 +48,21 @@ export default function Kemiskinan() {
     setLoading(false);
   }, []);
 
-  // Ambil data 4.2.1 JSON
+  // Ambil data 4.4.1 JSON
   useEffect(() => {
-    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.2.1.json', {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.4.1%20KDA.json', {
       // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        setJson421(jsonData);
+        setJson441(jsonData);
 
         // isi tahunList
         const tahunUnik = [...new Set(jsonData.map((d) => d.tahun))].sort();
         setTahunList(tahunUnik);
         if (tahunUnik.length > 0) setTahun(tahunUnik[tahunUnik.length - 1]);
-
-        // isi kecamatanList
-        const kecamatanUnik = [...new Set(jsonData.map((d) => d.kecamatan))].sort();
-        setKecamatanList(kecamatanUnik);
-
-        // ✅ set default ke "Kota Waikabubak" kalau ada di list
-        if (kecamatanUnik.includes('Kota Waikabubak')) {
-          setSelectedKecamatan('Kota Waikabubak');
-        } else {
-          setSelectedKecamatan(kecamatanUnik[0]); // fallback ke pertama
-        }
       });
-  }, []);
-
-  // Ambil data 4.2.2 KDA JSON
-  useEffect(() => {
-    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.2.2%20KDA.json', {
-      // headers: { Accept: 'application/vnd.github.v3.raw' }
-      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
-    })
-      .then((res) => res.json())
-      .then((jsonData) => setJson422(jsonData));
   }, []);
 
   return (
@@ -96,7 +76,7 @@ export default function Kemiskinan() {
             color: (theme) => theme.palette.grey[900]
           }}
         >
-          Keadaan Kemiskinan Setiap Kecamatan di Kabupaten Sumba Barat, {tahun}
+          Keadaan Kemiskinan di Kabupaten Sumba Barat, {tahun}
         </Typography>
       }
     >
@@ -104,7 +84,7 @@ export default function Kemiskinan() {
         {/* Filter Tahun & Kecamatan */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 3 }}>
           <Stack direction="row" spacing={2}>
-            <FormControl size="small">
+            {/* <FormControl size="small">
               <Typography variant="caption" sx={{ mb: 0.5, fontWeight: 'bold', color: 'text.secondary' }}>
                 Tahun
               </Typography>
@@ -119,78 +99,32 @@ export default function Kemiskinan() {
 
             <FormControl size="small">
               <Typography variant="caption" sx={{ mb: 0.5, fontWeight: 'bold', color: 'text.secondary' }}>
-                Kecamatan
+                Tahun
               </Typography>
-              <Select
-                value={selectedKecamatan}
-                onChange={(e) => setSelectedKecamatan(e.target.value)}
-                sx={{ borderRadius: 3, fontWeight: 'bold', height: 40 }}
-              >
-                {kecamatanList.map((kec) => (
-                  <MenuItem key={kec} value={kec}>
-                    {kec}
+              <Select value={tahun} onChange={(e) => setTahun(e.target.value)} sx={{ borderRadius: 3, fontWeight: 'bold', height: 40 }}>
+                {tahunList.map((t) => (
+                  <MenuItem key={t} value={t}>
+                    {t}
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Stack>
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahSekolahCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahSekolahNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahSekolahSwastaCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          <Grid item xs={12} md={12} lg={12}>
+            <GarisKemiskinanLineCard isLoading={isLoading} data={json441} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={6}>
-            {/* <BarJumlahDesaSekolahCard isLoading={isLoading} data={json411} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            {/* <DonutFasilitasSekolahCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          <Grid item xs={12} md={12} lg={12}>
+            <PendudukMiskinLineCard isLoading={isLoading} data={json441} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahGuruNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahGuruSwasta isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={6}>
-            {/* <DonutGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            {/* <StackedGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahMuridNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahMuridSwastaCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={6}>
-            {/* <DonutMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            {/* <StackedMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          <Grid item xs={12} md={12} lg={12}>
+            <IndeksLineChart isLoading={isLoading} data={json441} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
       </CardContent>

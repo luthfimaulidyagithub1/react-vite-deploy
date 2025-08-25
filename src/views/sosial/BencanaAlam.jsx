@@ -7,6 +7,15 @@ import { Grid, Box, CardContent, Paper, Typography, FormControl, Select, MenuIte
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
+import JumlahBencanaAlamCard from './bencana-component/JumlahBencanaAlamCard';
+import JumlahBencanaGempaCard from './bencana-component/JumlahBencanaGempaCard';
+import JumlahBencanaLongsorCard from './bencana-component/JumlahBencanaLongsorCard';
+import JumlahBencanaBanjirCard from './bencana-component/JumlahBencanaBanjirCard';
+import JumlahBencanaKekeringanCard from './bencana-component/JumlahBencanaKekeringanCard';
+import JumlahBencanaAnginCard from './bencana-component/JumlahBencanaAnginCard';
+import PieBencanaCard from './perumahan-component/PieBencanaCard';
+import PieKorbanBencanaCard from './perumahan-component/PieKorbanBencanaCard';
+import TabelMitigasiBencanaCard from './bencana-component/TabelMitigasiBencanaCard';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -33,10 +42,10 @@ import {
 export default function BencanaAlam() {
   const [isLoading, setLoading] = useState(true);
   const mapRef = useRef();
-  // json untuk 4.2.1
-  const [json421, setJson421] = useState([]);
-  // json untuk 4.2.2 KDA
-  const [json422, setJson422] = useState([]);
+  // json untuk 4.4.2-4.4.3
+  const [json442, setJson442] = useState([]);
+  // json untuk 4.4.4 KDA
+  const [json444, setJson444] = useState([]);
 
   const [tahunList, setTahunList] = useState([]);
   const [tahun, setTahun] = useState('');
@@ -47,15 +56,15 @@ export default function BencanaAlam() {
     setLoading(false);
   }, []);
 
-  // Ambil data 4.2.1 JSON
+  // Ambil data 4.4.2-4.4.3 JSON
   useEffect(() => {
-    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.2.1.json', {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.4.2-4.4.3.json', {
       // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        setJson421(jsonData);
+        setJson442(jsonData);
 
         // isi tahunList
         const tahunUnik = [...new Set(jsonData.map((d) => d.tahun))].sort();
@@ -75,14 +84,14 @@ export default function BencanaAlam() {
       });
   }, []);
 
-  // Ambil data 4.2.2 KDA JSON
+  // Ambil data 4.4.4
   useEffect(() => {
-    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.2.2%20KDA.json', {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.4.4.json', {
       // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
-      .then((jsonData) => setJson422(jsonData));
+      .then((jsonData) => setJson444(jsonData));
   }, []);
 
   return (
@@ -96,7 +105,7 @@ export default function BencanaAlam() {
             color: (theme) => theme.palette.grey[900]
           }}
         >
-          Keadaan BencanaAlam Setiap Kecamatan di Kabupaten Sumba Barat, {tahun}
+          Keadaan Bencana Alam Setiap Kecamatan di Kabupaten Sumba Barat, {tahun}
         </Typography>
       }
     >
@@ -138,37 +147,37 @@ export default function BencanaAlam() {
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahSekolahCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+            <JumlahBencanaAlamCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahSekolahNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+            <JumlahBencanaGempaCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahSekolahSwastaCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+            <JumlahBencanaLongsorCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={6}>
-            {/* <BarJumlahDesaSekolahCard isLoading={isLoading} data={json411} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          <Grid item xs={12} md={6} lg={4}>
+            <JumlahBencanaBanjirCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            {/* <DonutFasilitasSekolahCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          <Grid item xs={12} md={6} lg={4}>
+            <JumlahBencanaKekeringanCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahGuruNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahGuruSwasta isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          <Grid item xs={12} md={6} lg={4}>
+            <JumlahBencanaAnginCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={12} lg={6}>
-            {/* <DonutGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+            <PieBencanaCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            <PieKorbanBencanaCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} mt={0.5}>
+          <Grid item xs={12} md={12} lg={12}>
+            <TabelMitigasiBencanaCard isLoading={isLoading} data={json444} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
             {/* <StackedGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}

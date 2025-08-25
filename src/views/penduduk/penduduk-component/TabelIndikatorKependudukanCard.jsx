@@ -91,7 +91,7 @@ export default function TabelIndikatorKependudukanCard({ isLoading, data, tahun,
 
   const headCells = [
     { id: 'no', label: 'No', align: 'center', disableSort: true },
-    { id: 'deskel', label: 'Desa', align: 'left' },
+    { id: 'deskel', label: 'Desa / Kelurahan', align: 'left' },
     { id: 'kk', label: 'KK', align: 'center' },
     { id: 'jumlah', label: 'Penduduk', align: 'center' }, // ✅ kolom baru
     { id: 'persentase penduduk', label: 'Persentase Penduduk (%)', align: 'center' },
