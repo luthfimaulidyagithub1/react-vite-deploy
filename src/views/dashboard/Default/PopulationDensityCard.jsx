@@ -53,8 +53,8 @@ export default function PopulationDensityCard({ isLoading }) {
   const [year, setYear] = useState(null);
 
   useEffect(() => {
-    fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/latlong_wil.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/latlong_wil.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())

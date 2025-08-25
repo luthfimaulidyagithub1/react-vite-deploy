@@ -7,14 +7,12 @@ import { Grid, Box, CardContent, Paper, Typography, FormControl, Select, MenuIte
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
-import PendudukCard from './penduduk-component/PendudukCard';
-import KKCard from './penduduk-component/KKCard';
-import DensityKecCard from './penduduk-component/DensityKecCard';
-import RasioJKKecCard from './penduduk-component/RasioJKKecCard';
-import PieJenisKelaminCard from './penduduk-component/PieJenisKelaminCard';
-import DonutPendudukDesaCard from './penduduk-component/DonutPendudukDesaCard';
-import BarPendudukJKDesaCard from './penduduk-component/BarPendudukJKDesaCard';
-import TabelIndikatorKependudukanCard from './penduduk-component/TabelIndikatorKependudukanCard';
+import DonutPendudukAgamaCard from './agama-component/DonutPendudukAgamaCard';
+import AgamaTerbanyakCard from './agama-component/AgamaTerbanyakCard';
+import JumlahTempatIbadahCard from './agama-component/JumlahTempatIbadahCard';
+import JumlahFasilitasOlahragaCard from './agama-component/JumlahFasilitasOlahragaCard';
+import BarTempatIbadahCard from './agama-component/BarTempatIbadahCard';
+import StackedORCard from './agama-component/StackedORCard';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -38,41 +36,39 @@ import {
   ReferenceLine
 } from 'recharts';
 
-export default function Penduduk() {
+export default function AgamaOR() {
   const [isLoading, setLoading] = useState(true);
   const mapRef = useRef();
-  // json untuk 3.1 dan 3.2
-  const [json, setJson] = useState([]);
+  // json untuk 4.3.1 KDA
+  const [json431, setJson431] = useState([]);
+  // json untuk 4.3.2 KDA
+  const [json432, setJson432] = useState([]);
+  // json untuk 4.4.5
+  const [json445, setJson445] = useState([]);
 
   const [tahunList, setTahunList] = useState([]);
   const [tahun, setTahun] = useState('');
   const [selectedKecamatan, setSelectedKecamatan] = useState('Kota Waikabubak'); // ✅ default langsung Kota Waikabubak
   const [kecamatanList, setKecamatanList] = useState([]);
-  const [mapStyle, setMapStyle] = useState('https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json');
-  const [sumberData, setSumberData] = useState([]);
 
   useEffect(() => {
     setLoading(false);
   }, []);
 
-  // Ambil data 3.1 dan 3.2 JSON
+  // Ambil data 4.2.1 JSON
   useEffect(() => {
-    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/3.1%20dan%203.2.json', {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.3.1%20KDA.json', {
       // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        setJson(jsonData);
+        setJson431(jsonData);
 
         // isi tahunList
         const tahunUnik = [...new Set(jsonData.map((d) => d.tahun))].sort();
         setTahunList(tahunUnik);
         if (tahunUnik.length > 0) setTahun(tahunUnik[tahunUnik.length - 1]);
-
-        // isi sumberData
-        const sumberUnik = [...new Set(jsonData.flatMap((d) => d.sumber || []))];
-        setSumberData(sumberUnik);
 
         // isi kecamatanList
         const kecamatanUnik = [...new Set(jsonData.map((d) => d.kecamatan))].sort();
@@ -87,6 +83,26 @@ export default function Penduduk() {
       });
   }, []);
 
+  // Ambil data 4.2.2 KDA JSON
+  useEffect(() => {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.3.2%20KDA.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
+      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+    })
+      .then((res) => res.json())
+      .then((jsonData) => setJson432(jsonData));
+  }, []);
+
+  // Ambil data 4.4.5 JSON
+  useEffect(() => {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/4.4.5.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
+      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+    })
+      .then((res) => res.json())
+      .then((jsonData) => setJson445(jsonData));
+  }, []);
+
   return (
     <MainCard
       content={false}
@@ -98,7 +114,7 @@ export default function Penduduk() {
             color: (theme) => theme.palette.grey[900]
           }}
         >
-          Indikator Kependudukan Setiap Kecamatan di Kabupaten Sumba Barat, {tahun}
+          Agama dan Fasilitas Olahraga Setiap Kecamatan di Kabupaten Sumba Barat, {tahun}
         </Typography>
       }
     >
@@ -139,33 +155,54 @@ export default function Penduduk() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={3}>
-            <PendudukCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
+          <Grid item xs={12} md={6} lg={6}>
+            <AgamaTerbanyakCard isLoading={isLoading} data={json431} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <KKCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
+          <Grid item xs={12} md={6} lg={6}>
+            <JumlahTempatIbadahCard isLoading={isLoading} data={json432} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <DensityKecCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <RasioJKKecCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={6} lg={4}>
-            <PieJenisKelaminCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
+            {/* <JumlahFasilitasOlahragaCard isLoading={isLoading} data={json445} tahun={tahun} kecamatan={selectedKecamatan} /> */}
           </Grid>
-          <Grid item xs={12} md={6} lg={8}>
-            <DonutPendudukDesaCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
+        </Grid>
+        <Grid container spacing={2} mt={0.5}>
+          <Grid item xs={12} md={6} lg={6}>
+            <DonutPendudukAgamaCard isLoading={isLoading} data={json431} tahun={tahun} kecamatan={selectedKecamatan} />
+          </Grid>
+          <Grid item xs={12} md={6} lg={6}>
+            <BarTempatIbadahCard isLoading={isLoading} data={json432} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={12} lg={12}>
-            <BarPendudukJKDesaCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
+            <StackedORCard isLoading={isLoading} data={json445} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={12}>
-            <TabelIndikatorKependudukanCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
+        </Grid>
+        <Grid container spacing={2} mt={0.5}>
+          <Grid item xs={12} md={12} lg={6}>
+            {/* <DonutGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            {/* <StackedGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} mt={0.5}>
+          <Grid item xs={12} md={12} lg={4}>
+            {/* <JumlahMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          </Grid>
+          <Grid item xs={12} md={12} lg={4}>
+            {/* <JumlahMuridNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          </Grid>
+          <Grid item xs={12} md={12} lg={4}>
+            {/* <JumlahMuridSwastaCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} mt={0.5}>
+          <Grid item xs={12} md={12} lg={6}>
+            {/* <DonutMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            {/* <StackedMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
           </Grid>
         </Grid>
       </CardContent>

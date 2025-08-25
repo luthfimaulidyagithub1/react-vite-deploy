@@ -59,8 +59,8 @@ export default function Pemerintahan() {
 
   // Ambil data 2.1.1 JSON
   useEffect(() => {
-    fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/2.1.1.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/2.1.1.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
@@ -91,8 +91,8 @@ export default function Pemerintahan() {
 
   // Ambil data 2.2.1 KDA
   useEffect(() => {
-    fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/2.2.1.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/2.2.1.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
@@ -101,8 +101,8 @@ export default function Pemerintahan() {
 
   // Ambil data 2.2.3 KDA
   useEffect(() => {
-    fetch('https://api.github.com/repos/luthfimaulidyagithub1/DDA-json/contents/2.2.3.json', {
-      headers: { Accept: 'application/vnd.github.v3.raw' }
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/2.2.3.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())

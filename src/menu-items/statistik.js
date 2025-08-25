@@ -79,10 +79,10 @@ const statistik = {
       children: [
         { id: 'pendidikan', title: 'Pendidikan', type: 'item', url: '/statistik/pendidikan', icon: icons.IconSchool },
         {
-          id: 'agama-kesehatan',
+          id: 'agama-or',
           title: 'Agama, Kesehatan & Olahraga',
           type: 'item',
-          url: '/statistik/agama-kesehatan',
+          url: '/statistik/agama-or',
           icon: icons.IconHeart
         },
         { id: 'perumahan', title: 'Perumahan & Lingkungan', type: 'item', url: '/statistik/perumahan', icon: icons.IconHome },

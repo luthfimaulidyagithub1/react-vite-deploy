@@ -22,7 +22,8 @@ const Ketenagakerjaan = Loadable(lazy(() => import('views/penduduk/Ketenagakerja
 
 // sosial routing
 const Pendidikan = Loadable(lazy(() => import('views/sosial/Pendidikan')));
-const AgamaDll = Loadable(lazy(() => import('views/sosial/AgamaDll')));
+const Kesehatan = Loadable(lazy(() => import('views/sosial/Kesehatan')));
+const AgamaOR = Loadable(lazy(() => import('views/sosial/AgamaOR')));
 const Perumahan = Loadable(lazy(() => import('views/sosial/Perumahan')));
 const Kemiskinan = Loadable(lazy(() => import('views/sosial/Kemiskinan')));
 const BencanaAlam = Loadable(lazy(() => import('views/sosial/BencanaAlam')));
@@ -83,8 +84,12 @@ const MainRoutes = {
       element: <Pendidikan />
     },
     {
-      path: 'statistik/agama-dll',
-      element: <AgamaDll />
+      path: 'statistik/kesehatan',
+      element: <Kesehatan />
+    },
+    {
+      path: 'statistik/agama-or',
+      element: <AgamaOR />
     },
     {
       path: 'statistik/perumahan',

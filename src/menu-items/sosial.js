@@ -15,17 +15,18 @@ const sosial = {
       icon: icons.IconHeart,
       children: [
         { id: 'pendidikan', title: 'Pendidikan', type: 'item', url: '/statistik/pendidikan', icon: icons.IconHeart },
+        { id: 'kesehatan', title: 'Kesehatan', type: 'item', url: '/statistik/kesehatan', icon: icons.IconHeart },
         {
-          id: 'agama-kesehatan',
-          title: 'Agama dll',
-          caption: 'Agama, Kesehatan, Olahraga',
+          id: 'agama-or',
+          title: 'Agama & Olahraga',
+          caption: 'Agama & Olahraga',
           type: 'item',
-          url: '/statistik/agama-dll',
+          url: '/statistik/agama-or',
           icon: icons.IconHeart
         },
         {
           id: 'perumahan',
-          title: 'Perumahan',
+          title: 'Perumahan & Lingkungan',
           caption: 'Perumahan & Lingkungan',
           type: 'item',
           url: '/statistik/perumahan',
