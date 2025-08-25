@@ -28,6 +28,14 @@ const Perumahan = Loadable(lazy(() => import('views/sosial/Perumahan')));
 const Kemiskinan = Loadable(lazy(() => import('views/sosial/Kemiskinan')));
 const BencanaAlam = Loadable(lazy(() => import('views/sosial/BencanaAlam')));
 
+// agribisnis routing
+const Pertanian = Loadable(lazy(() => import('views/agribisnis/Pertanian')));
+const Peternakan = Loadable(lazy(() => import('views/agribisnis/Peternakan')));
+const Perkebunan = Loadable(lazy(() => import('views/agribisnis/Perkebunan')));
+const Hortikultura = Loadable(lazy(() => import('views/agribisnis/Hortikultura')));
+const Perikanan = Loadable(lazy(() => import('views/agribisnis/Perikanan')));
+const Kehutanan = Loadable(lazy(() => import('views/agribisnis/Kehutanan')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -102,6 +110,30 @@ const MainRoutes = {
     {
       path: 'statistik/bencana',
       element: <BencanaAlam />
+    },
+    {
+      path: 'statistik/pertanian',
+      element: <Pertanian />
+    },
+    {
+      path: 'statistik/peternakan',
+      element: <Peternakan />
+    },
+    {
+      path: 'statistik/perkebunan',
+      element: <Perkebunan />
+    },
+    {
+      path: 'statistik/hortikultura',
+      element: <Hortikultura />
+    },
+    {
+      path: 'statistik/perikanan',
+      element: <Perikanan />
+    },
+    {
+      path: 'statistik/kehutanan',
+      element: <Kehutanan />
     },
     {
       path: 'typography',
