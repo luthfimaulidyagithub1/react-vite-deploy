@@ -43,13 +43,18 @@ export default function PieListrikCard({ isLoading, data, tahun, kecamatan }) {
       return isNaN(num) ? 0 : num;
     };
 
-    // ambil nilai kategori, default 0 kalau tidak ada
-    const pengguna = filtered.find((item) => String(item.kategori).toLowerCase() === 'pengguna listrik');
-    const bukanPengguna = filtered.find((item) => String(item.kategori).toLowerCase() === 'bukan pengguna listrik');
+    // jumlahkan per kategori
+    const penggunaTotal = filtered
+      .filter((item) => String(item.kategori).toLowerCase() === 'pengguna listrik')
+      .reduce((sum, item) => sum + toNumber(item['jumlah keluarga']), 0);
+
+    const bukanPenggunaTotal = filtered
+      .filter((item) => String(item.kategori).toLowerCase() === 'bukan pengguna listrik')
+      .reduce((sum, item) => sum + toNumber(item['jumlah keluarga']), 0);
 
     const result = [
-      { name: 'Pengguna Listrik', value: toNumber(pengguna?.['jumlah keluarga']) },
-      { name: 'Bukan Pengguna Listrik', value: toNumber(bukanPengguna?.['jumlah keluarga']) }
+      { name: 'Pengguna Listrik', value: penggunaTotal },
+      { name: 'Bukan Pengguna Listrik', value: bukanPenggunaTotal }
     ];
 
     setChartData(result);
@@ -65,9 +70,9 @@ export default function PieListrikCard({ isLoading, data, tahun, kecamatan }) {
     'Bukan Pengguna Listrik': theme.palette.warning.dark
   };
 
-  // custom label
+  // custom label (tetap di dalam)
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, value }) => {
-    if (value === 0) return null; // jangan tampilkan label kalau nilainya 0
+    if (value === 0) return null;
 
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
