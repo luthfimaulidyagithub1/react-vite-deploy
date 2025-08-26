@@ -1,4 +1,4 @@
-// DonutProduksiPerkebunanCard.jsx
+// DonutLuasPanenPanganCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, Typography, Box } from '@mui/material';
@@ -28,7 +28,7 @@ const COLORS = [
   '#808080'
 ];
 
-export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, kecamatan }) {
+export default function DonutLuasPanenPanganCard({ isLoading, data, tahun, kecamatan }) {
   const [chartData, setChartData] = useState([]);
   const theme = useTheme();
   const [hoverIndex, setHoverIndex] = useState(null);
@@ -43,10 +43,10 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
       return;
     }
 
-    // filter kategori Produksi + tahun + kecamatan
+    // filter kategori Luas Panen (ha) + tahun + kecamatan
     let filtered = data.filter(
       (item) =>
-        String(item.kategori).toLowerCase().trim() === 'produksi (ton)' &&
+        String(item.kategori).toLowerCase().trim() === 'luas panen (ha)' &&
         String(item.tahun) === String(tahun) &&
         (kecamatan === 'Semua' || String(item.kecamatan).trim() === String(kecamatan).trim())
     );
@@ -138,7 +138,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
           {entry.name}
           {hoverIndex === index && (
             <Typography component="span" sx={{ ml: 1, fontSize: '0.65rem', color: 'text.secondary' }}>
-              {entry.jumlah.toLocaleString('id-ID')} Ton ({entry.value.toFixed(2)}%)
+              {entry.jumlah.toLocaleString('id-ID')} Ha ({entry.value.toFixed(2)}%)
             </Typography>
           )}
         </Box>
@@ -157,7 +157,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Judul */}
         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>
-          Distribusi Produksi (Ton) Perkebunan di Kecamatan {kecamatan}, {tahun}
+          Distribusi Luas Panen (Ha) Tanaman Pangan di Kecamatan {kecamatan}, {tahun}
         </Typography>
 
         {/* Chart + legend */}
@@ -176,20 +176,15 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
                   label={chartData.length > 0 ? ({ percent }) => `${(percent * 100).toFixed(1)}%` : () => ''}
                 >
                   {(chartData.length > 0 ? chartData : [{ name: 'Kosong', value: 1 }]).map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={
-                        chartData.length > 0 ? COLORS[index % COLORS.length] : '#e0e0e0' // warna abu2 kalau kosong
-                      }
-                    />
+                    <Cell key={`cell-${index}`} fill={chartData.length > 0 ? COLORS[index % COLORS.length] : '#e0e0e0'} />
                   ))}
                 </Pie>
 
                 <Tooltip
                   formatter={(value, name, props) => {
-                    if (!props?.payload || !props.payload.jumlah) return ['0 Ton', name];
+                    if (!props?.payload || !props.payload.jumlah) return ['0 Ha', name];
                     const jumlah = props.payload.jumlah;
-                    return [`${jumlah.toLocaleString('id-ID')} Ton (${value.toFixed(2)}%)`, props.payload.name];
+                    return [`${jumlah.toLocaleString('id-ID')} Ha (${value.toFixed(2)}%)`, props.payload.name];
                   }}
                   contentStyle={{ fontSize: '0.75rem' }}
                   labelStyle={{ fontSize: '0.7rem' }}
@@ -211,7 +206,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
                   fontWeight: 500
                 }}
               >
-                Produksi Perkebunan = 0
+                Luas Panen Tanaman Pangan = 0
               </Typography>
             )}
           </Box>
@@ -231,7 +226,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
   );
 }
 
-DonutProduksiPerkebunanCard.propTypes = {
+DonutLuasPanenPanganCard.propTypes = {
   isLoading: PropTypes.bool,
   data: PropTypes.array,
   tahun: PropTypes.string,

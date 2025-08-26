@@ -1,4 +1,4 @@
-// DonutProduksiPerkebunanCard.jsx
+// DonutProduksiPanganCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, Typography, Box } from '@mui/material';
@@ -28,7 +28,7 @@ const COLORS = [
   '#808080'
 ];
 
-export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, kecamatan }) {
+export default function DonutProduksiPanganCard({ isLoading, data, tahun, kecamatan }) {
   const [chartData, setChartData] = useState([]);
   const theme = useTheme();
   const [hoverIndex, setHoverIndex] = useState(null);
@@ -43,7 +43,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
       return;
     }
 
-    // filter kategori Produksi + tahun + kecamatan
+    // filter kategori Produksi (ton) + tahun + kecamatan
     let filtered = data.filter(
       (item) =>
         String(item.kategori).toLowerCase().trim() === 'produksi (ton)' &&
@@ -157,7 +157,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Judul */}
         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>
-          Distribusi Produksi (Ton) Perkebunan di Kecamatan {kecamatan}, {tahun}
+          Distribusi Total Produksi (Ton) Tanaman Pangan di Kecamatan {kecamatan}, {tahun}
         </Typography>
 
         {/* Chart + legend */}
@@ -176,12 +176,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
                   label={chartData.length > 0 ? ({ percent }) => `${(percent * 100).toFixed(1)}%` : () => ''}
                 >
                   {(chartData.length > 0 ? chartData : [{ name: 'Kosong', value: 1 }]).map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={
-                        chartData.length > 0 ? COLORS[index % COLORS.length] : '#e0e0e0' // warna abu2 kalau kosong
-                      }
-                    />
+                    <Cell key={`cell-${index}`} fill={chartData.length > 0 ? COLORS[index % COLORS.length] : '#e0e0e0'} />
                   ))}
                 </Pie>
 
@@ -211,7 +206,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
                   fontWeight: 500
                 }}
               >
-                Produksi Perkebunan = 0
+                Luas Panen Tanaman Pangan = 0
               </Typography>
             )}
           </Box>
@@ -231,7 +226,7 @@ export default function DonutProduksiPerkebunanCard({ isLoading, data, tahun, ke
   );
 }
 
-DonutProduksiPerkebunanCard.propTypes = {
+DonutProduksiPanganCard.propTypes = {
   isLoading: PropTypes.bool,
   data: PropTypes.array,
   tahun: PropTypes.string,
