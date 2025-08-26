@@ -7,7 +7,7 @@ const neraca = {
   id: 'neraca',
   title: 'Sistem Neraca Regional',
   type: 'group',
-  children: [{ id: 'neraca-item', title: 'Neraca Regional', type: 'item', url: '/statistik/neraca', icon: icons.IconChartPie }]
+  children: [{ id: 'neraca-item', title: 'Neraca', type: 'item', url: '/statistik/neraca', icon: icons.IconChartPie }]
 };
 
 export default neraca;

@@ -8,6 +8,7 @@ import { constant } from 'lodash-es';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const Beranda = Loadable(lazy(() => import('views/dashboard/Default/Beranda')));
+const Landing = Loadable(lazy(() => import('views/dashboard/Default/Landing')));
 
 // geografi routing
 const Geografi = Loadable(lazy(() => import('views/geografi/Geografi')));
@@ -52,7 +53,7 @@ const MainRoutes = {
   children: [
     {
       path: '/',
-      element: <DashboardDefault />
+      element: <Landing />
     },
     {
       path: 'beranda',

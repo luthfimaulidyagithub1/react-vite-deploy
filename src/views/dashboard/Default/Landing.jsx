@@ -217,6 +217,8 @@ export default function Beranda({ isLoading }) {
         <SkeletonPopularCard />
       ) : (
         <MainCard content={false}>
+          <IntroPopup />
+
           <CardContent>
             <Typography variant="h4" align="center" sx={{ mb: 3, fontWeight: 'bold' }}>
               Indikator Kependudukan Setiap Kecamatan di Kabupaten Sumba Barat Tahun {tahun}

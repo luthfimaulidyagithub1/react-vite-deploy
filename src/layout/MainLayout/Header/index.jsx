@@ -4,6 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
+import { Typography } from '@mui/material';
 
 // project imports
 import LogoSection from '../LogoSection';
@@ -14,6 +15,7 @@ import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 // assets
 import { IconMenu2 } from '@tabler/icons-react';
 import User1 from 'assets/images/users/user-round.svg';
+import bpsLogo from 'assets/images/bps-logo.png';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -27,7 +29,7 @@ export default function Header() {
   return (
     <>
       {/* logo & toggler button */}
-      <Box sx={{ width: downMD ? 'auto' : 228, display: 'flex' }}>
+      <Box sx={{ color: 'secondary.light', width: downMD ? 'auto' : 228, display: 'flex' }}>
         <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
           <LogoSection />
         </Box>
@@ -103,6 +105,36 @@ export default function Header() {
         target="_blank"
         aria-label="Unduh Publikasi BPS"
       />
+      {/* Logo BPS + Text */}
+      <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+        <Box
+          component="img"
+          src={bpsLogo}
+          alt="BPS Logo"
+          sx={{
+            height: 40, // tinggi fix
+            width: 'auto',
+            mr: { xs: 0, md: 1 }, // kalau kecil margin hilang
+            objectFit: 'contain',
+            display: 'block'
+          }}
+        />
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: 'bold',
+            color: 'black',
+            lineHeight: 1.2,
+            display: { xs: 'none', md: 'block' } // ⬅️ hanya muncul di md ke atas
+          }}
+        >
+          <i>
+            BADAN PUSAT STATISTIK
+            <br />
+            KABUPATEN SUMBA BARAT
+          </i>
+        </Typography>
+      </Box>
 
       {/* space */}
       {/* <Box sx={{ flexGrow: 0.5 }} /> */}

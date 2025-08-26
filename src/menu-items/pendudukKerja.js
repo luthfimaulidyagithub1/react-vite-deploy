@@ -13,16 +13,14 @@ const pendudukKerja = {
       title: 'Penduduk',
       type: 'item',
       url: '/statistik/penduduk',
-      icon: icons.IconUsers,
-      breadcrumbs: false
+      icon: icons.IconUsers
     },
     {
       id: 'ketenagakerjaan',
-      title: 'Ketenagakerjaan',
+      title: 'Tenaga Kerja',
       type: 'item',
       url: '/statistik/ketenagakerjaan',
-      icon: icons.IconUsers,
-      breadcrumbs: false
+      icon: icons.IconUsers
     }
   ]
 };

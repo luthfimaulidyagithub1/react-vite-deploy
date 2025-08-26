@@ -19,17 +19,13 @@ const geografiIklim = {
           id: 'geografi',
           title: 'Geografi',
           type: 'item',
-          url: '/statistik/geografi',
-          icon: icons.IconWorld,
-          breadcrumbs: false
+          url: '/statistik/geografi'
         },
         {
           id: 'iklim',
           title: 'Iklim',
           type: 'item',
-          url: '/statistik/iklim',
-          icon: icons.CloudOutlinedIcon,
-          breadcrumbs: false
+          url: '/statistik/iklim'
         }
       ]
     }

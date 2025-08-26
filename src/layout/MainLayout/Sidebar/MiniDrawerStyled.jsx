@@ -38,18 +38,14 @@ function closedMixin(theme) {
 
 const MiniDrawerStyled = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   width: drawerWidth,
-  borderRight: '0px',
   flexShrink: 0,
   whiteSpace: 'nowrap',
   boxSizing: 'border-box',
-  ...(open && {
-    ...openedMixin(theme),
-    '& .MuiDrawer-paper': openedMixin(theme)
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    '& .MuiDrawer-paper': closedMixin(theme)
-  })
+  '& .MuiDrawer-paper': {
+    ...(open ? openedMixin(theme) : closedMixin(theme)),
+    backgroundColor: `${theme.palette.secondary[200]} !important`
+    // color: `${theme.palette.secondary.contrastText} !important`
+  }
 }));
 
 export default MiniDrawerStyled;

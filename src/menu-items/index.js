@@ -24,13 +24,13 @@ const menuItems = {
     pemerintahan,
     pendudukKerja,
     sosial,
-    pertanian,
-    industri,
-    pariwisata,
-    perdagangan,
-    pengeluaran,
-    neraca,
-    perbandingan
+    pertanian
+    // industri,
+    // pariwisata,
+    // perdagangan,
+    // pengeluaran,
+    // neraca,
+    // perbandingan
     // pages,
     // utilities
   ]

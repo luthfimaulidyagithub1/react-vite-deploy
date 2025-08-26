@@ -15,9 +15,9 @@ const pariwisata = {
       type: 'collapse',
       icon: icons.IconPlane,
       children: [
-        { id: 'pariwisata-item', title: 'Pariwisata', type: 'item', url: '/statistik/pariwisata', icon: icons.IconPlane },
-        { id: 'transportasi', title: 'Transportasi', type: 'item', url: '/statistik/transportasi', icon: icons.IconCar },
-        { id: 'komunikasi', title: 'Komunikasi', type: 'item', url: '/statistik/komunikasi', icon: icons.IconPhone }
+        { id: 'pariwisata-item', title: 'Pariwisata', type: 'item', url: '/statistik/pariwisata' },
+        { id: 'transportasi', title: 'Transportasi', type: 'item', url: '/statistik/transportasi' },
+        { id: 'komunikasi', title: 'Komunikasi', type: 'item', url: '/statistik/komunikasi' }
       ]
     }
   ]

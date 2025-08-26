@@ -10,30 +10,28 @@ const sosial = {
   children: [
     {
       id: 'sosial-collapse',
-      title: 'Sosial & Kesejahteraan',
+      title: 'SosKes',
       type: 'collapse',
       icon: icons.IconHeart,
       children: [
-        { id: 'pendidikan', title: 'Pendidikan', type: 'item', url: '/statistik/pendidikan', icon: icons.IconHeart },
-        { id: 'kesehatan', title: 'Kesehatan', type: 'item', url: '/statistik/kesehatan', icon: icons.IconHeart },
+        { id: 'pendidikan', title: 'Pendidikan', type: 'item', url: '/statistik/pendidikan' },
+        { id: 'kesehatan', title: 'Kesehatan', type: 'item', url: '/statistik/kesehatan' },
         {
           id: 'agama-or',
-          title: 'Agama & Olahraga',
+          title: 'Agama & OR',
           caption: 'Agama & Olahraga',
           type: 'item',
-          url: '/statistik/agama-or',
-          icon: icons.IconHeart
+          url: '/statistik/agama-or'
         },
         {
           id: 'perumahan',
-          title: 'Perumahan & Lingkungan',
+          title: 'Perumahan',
           caption: 'Perumahan & Lingkungan',
           type: 'item',
-          url: '/statistik/perumahan',
-          icon: icons.IconHeart
+          url: '/statistik/perumahan'
         },
-        { id: 'kemiskinan', title: 'Kemiskinan', type: 'item', url: '/statistik/kemiskinan', icon: icons.IconHeart },
-        { id: 'bencana', title: 'Bencana Alam', type: 'item', url: '/statistik/bencana', icon: icons.IconHeart }
+        { id: 'kemiskinan', title: 'Kemiskinan', type: 'item', url: '/statistik/kemiskinan' },
+        { id: 'bencana', title: 'Bencana', type: 'item', url: '/statistik/bencana' }
       ]
     }
   ]

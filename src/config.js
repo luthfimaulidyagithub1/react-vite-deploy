@@ -1,4 +1,4 @@
-export const DASHBOARD_PATH = '/beranda/default';
+export const DASHBOARD_PATH = '/';
 
 const config = {
   fontFamily: `'Roboto', sans-serif`,
