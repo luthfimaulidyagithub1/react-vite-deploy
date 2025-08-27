@@ -55,7 +55,7 @@ export default function Header() {
       </Box>
 
       {/* button Unduh Data Tabel */}
-      <Chip
+      {/* <Chip
         sx={{
           ml: 2,
           height: '48px',
@@ -77,7 +77,7 @@ export default function Header() {
         href="https://docs.google.com/spreadsheets/d/1ZVlXo3W5Oy8iHjPK-IRhUrMJTt_qOrGBFpimrcvbbuw/edit?gid=1396414102#gid=1396414102"
         target="_blank"
         aria-label="Lihat Data Tabel"
-      />
+      /> */}
       {/* space */}
       <Box sx={{ flexGrow: 1 }} />
 
@@ -99,7 +99,7 @@ export default function Header() {
             lineHeight: 1
           }
         }}
-        label="Unduh Publikasi BPS"
+        label="Publikasi BPS"
         component="a"
         href="https://sumbabaratkab.bps.go.id/id/publication"
         target="_blank"
