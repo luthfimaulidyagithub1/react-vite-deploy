@@ -78,6 +78,31 @@ export default function Header() {
         target="_blank"
         aria-label="Lihat Data Tabel"
       /> */}
+
+      {/* button Saran Masukan */}
+      <Chip
+        sx={{
+          ml: 2,
+          height: '48px',
+          alignItems: 'center',
+          borderRadius: '27px',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          bgcolor: theme.palette.primary[200],
+          color: theme.palette.primary.contrastText,
+          '&:hover': {
+            bgcolor: theme.palette.primary.dark
+          },
+          '& .MuiChip-label': {
+            lineHeight: 1
+          }
+        }}
+        label="Saran & Masukan"
+        component="a"
+        href="https://docs.google.com/forms/d/e/1FAIpQLSdZfDkJ0Tnnwmw0pdvILTq7rUKVq-sS1MuzBNPWT4joOyPIIg/viewform?usp=preview"
+        target="_blank"
+        aria-label="Saran & Masukan"
+      />
       {/* space */}
       <Box sx={{ flexGrow: 1 }} />
 
