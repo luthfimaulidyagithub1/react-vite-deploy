@@ -24,9 +24,9 @@ const menuItems = {
     pemerintahan,
     pendudukKerja,
     sosial,
-    pertanian
-    // industri,
-    // pariwisata,
+    pertanian,
+    industri,
+    pariwisata
     // perdagangan,
     // pengeluaran,
     // neraca,

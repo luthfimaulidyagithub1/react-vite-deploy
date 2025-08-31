@@ -13,7 +13,7 @@ const industri = {
       id: 'industri-item',
       title: 'Energi',
       type: 'item',
-      url: '/statistik/industri',
+      url: '/statistik/energi',
       icon: icons.IconBuildingFactory
     }
   ]

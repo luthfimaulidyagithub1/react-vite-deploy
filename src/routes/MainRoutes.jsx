@@ -37,6 +37,14 @@ const Hortikultura = Loadable(lazy(() => import('views/agribisnis/Hortikultura')
 const Perikanan = Loadable(lazy(() => import('views/agribisnis/Perikanan')));
 const Kehutanan = Loadable(lazy(() => import('views/agribisnis/Kehutanan')));
 
+// industri routing
+const Energi = Loadable(lazy(() => import('views/industri')));
+
+// pariwisata routing
+const Pariwisata = Loadable(lazy(() => import('views/pariwisata/Pariwisata')));
+const Komunikasi = Loadable(lazy(() => import('views/pariwisata/Komunikasi')));
+const Transportasi = Loadable(lazy(() => import('views/pariwisata/Transportasi')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -135,6 +143,22 @@ const MainRoutes = {
     {
       path: 'statistik/kehutanan',
       element: <Kehutanan />
+    },
+    {
+      path: 'statistik/energi',
+      element: <Energi />
+    },
+    {
+      path: 'statistik/pariwisata',
+      element: <Pariwisata />
+    },
+    {
+      path: 'statistik/transportasi',
+      element: <Transportasi />
+    },
+    {
+      path: 'statistik/komunikasi',
+      element: <Komunikasi />
     },
     {
       path: 'typography',

@@ -7,12 +7,15 @@ import { Grid, Box, CardContent, Paper, Typography, FormControl, Select, MenuIte
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
-import LuasPanenPertanianCard from './pertanian-component/LuasPanenPertanianCard';
-import ProduksiPertanianCard from './pertanian-component/ProduksiPertanianCard';
-import ProduktivitasPadiCard from './pertanian-component/ProduktivitasPadiCard';
-import DonutLuasPanenPanganCard from './pertanian-component/DonutLuasPanenPanganCard';
-import DonutProduksiPanganCard from './pertanian-component/DonutProduksiPanganCard';
-import BarProduktivitasTanamanPanganCard from './pertanian-component/BarProduktivitasTanamanPanganCard';
+import TransportasiTerbanyakCard from './transportasi-component/TransportasiTerbanyakCard';
+import PermukaanJalanCard from './transportasi-component/PermukaanJalanCard';
+import KondisiJalanCard from './transportasi-component/KondisiJalanCard';
+import PieSaranaTransportasiCard from './transportasi-component/PieSaranaTransportasiCard';
+import PieAngkutanCard from './transportasi-component/PieAngkutanCard';
+import PieJalanTerluasCard from './transportasi-component/PieJalanTerluasCard';
+import PieDilaluiKendaraanCard from './transportasi-component/PieDilauiKendaraanCard';
+import StackedPanjangJalanCard from './transportasi-component/StackedPanjangJalanCard';
+import StackedKondisiJalanCard from './transportasi-component/StackedKondisiJalanCard';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -36,11 +39,15 @@ import {
   ReferenceLine
 } from 'recharts';
 
-export default function Pendidikan() {
+export default function Transportasi() {
   const [isLoading, setLoading] = useState(true);
   const mapRef = useRef();
-  // json untuk 5.3 KDA
-  const [json53, setJson53] = useState([]);
+  // json untuk 6.2.1
+  const [json621, setJson621] = useState([]);
+  // json untuk 6.2.3
+  const [json623, setJson623] = useState([]);
+  // json untuk 6.2.4
+  const [json624, setJson624] = useState([]);
 
   const [tahunList, setTahunList] = useState([]);
   const [tahun, setTahun] = useState('');
@@ -51,15 +58,15 @@ export default function Pendidikan() {
     setLoading(false);
   }, []);
 
-  // Ambil data 5.3 KDA JSON
+  // Ambil data 6.1.1 JSON
   useEffect(() => {
-    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/5.3%20KDA.json', {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/6.2.1.json', {
       // headers: { Accept: 'application/vnd.github.v3.raw' }
       // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        setJson53(jsonData);
+        setJson621(jsonData);
 
         // isi tahunList
         const tahunUnik = [...new Set(jsonData.map((d) => d.tahun))].sort();
@@ -79,6 +86,26 @@ export default function Pendidikan() {
       });
   }, []);
 
+  // Ambil data 6.2.3 JSON
+  useEffect(() => {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/6.2.3.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
+      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+    })
+      .then((res) => res.json())
+      .then((jsonData) => setJson623(jsonData));
+  }, []);
+
+  // Ambil data 6.2.4 JSON
+  useEffect(() => {
+    fetch('https://luthfimaulidyagithub1.github.io/DDA-json/6.2.4.json', {
+      // headers: { Accept: 'application/vnd.github.v3.raw' }
+      // Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+    })
+      .then((res) => res.json())
+      .then((jsonData) => setJson624(jsonData));
+  }, []);
+
   return (
     <MainCard
       content={false}
@@ -90,7 +117,7 @@ export default function Pendidikan() {
             color: (theme) => theme.palette.grey[900]
           }}
         >
-          Statistik Pertanian Setiap Kecamatan di Kabupaten Sumba Barat, {tahun}
+          Statistik Transportasi Setiap Kecamatan di Kabupaten Sumba Barat, {tahun}
         </Typography>
       }
     >
@@ -132,26 +159,37 @@ export default function Pendidikan() {
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={4}>
-            <LuasPanenPertanianCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
+            <TransportasiTerbanyakCard isLoading={isLoading} data={json621} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <ProduksiPertanianCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
+            <PermukaanJalanCard isLoading={isLoading} data={json623} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <ProduktivitasPadiCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
+            <KondisiJalanCard isLoading={isLoading} data={json624} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={6} lg={6}>
-            <DonutLuasPanenPanganCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
+            <PieSaranaTransportasiCard isLoading={isLoading} data={json621} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
           <Grid item xs={12} md={6} lg={6}>
-            <DonutProduksiPanganCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
+            <PieAngkutanCard isLoading={isLoading} data={json621} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={12}>
-            <BarProduktivitasTanamanPanganCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
+          <Grid item xs={12} md={6} lg={6}>
+            <PieJalanTerluasCard isLoading={isLoading} data={json621} tahun={tahun} kecamatan={selectedKecamatan} />
+          </Grid>
+          <Grid item xs={12} md={6} lg={6}>
+            <PieDilaluiKendaraanCard isLoading={isLoading} data={json621} tahun={tahun} kecamatan={selectedKecamatan} />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} mt={0.5}>
+          <Grid item xs={12} md={6} lg={6}>
+            <StackedPanjangJalanCard isLoading={isLoading} data={json623} tahun={tahun} kecamatan={selectedKecamatan} />
+          </Grid>
+          <Grid item xs={12} md={6} lg={6}>
+            <StackedKondisiJalanCard isLoading={isLoading} data={json624} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
       </CardContent>
