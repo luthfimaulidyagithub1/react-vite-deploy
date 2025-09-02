@@ -45,6 +45,12 @@ const Pariwisata = Loadable(lazy(() => import('views/pariwisata/Pariwisata')));
 const Komunikasi = Loadable(lazy(() => import('views/pariwisata/Komunikasi')));
 const Transportasi = Loadable(lazy(() => import('views/pariwisata/Transportasi')));
 
+// keuangan routing
+const Keuangan = Loadable(lazy(() => import('views/keuangan')));
+
+// perdagangan routing
+const Perdagangan = Loadable(lazy(() => import('views/perdagangan')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -159,6 +165,14 @@ const MainRoutes = {
     {
       path: 'statistik/komunikasi',
       element: <Komunikasi />
+    },
+    {
+      path: 'statistik/keuangan',
+      element: <Keuangan />
+    },
+    {
+      path: 'statistik/perdagangan',
+      element: <Perdagangan />
     },
     {
       path: 'typography',

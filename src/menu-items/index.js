@@ -26,8 +26,8 @@ const menuItems = {
     sosial,
     pertanian,
     industri,
-    pariwisata
-    // perdagangan,
+    pariwisata,
+    perdagangan
     // pengeluaran,
     // neraca,
     // perbandingan
