@@ -51,6 +51,15 @@ const Keuangan = Loadable(lazy(() => import('views/keuangan')));
 // perdagangan routing
 const Perdagangan = Loadable(lazy(() => import('views/perdagangan')));
 
+// pengeluaran routing
+const Pengeluaran = Loadable(lazy(() => import('views/pengeluaran')));
+
+// neraca routing
+const Neraca = Loadable(lazy(() => import('views/neraca')));
+
+// perbandingan routing
+const Perbandingan = Loadable(lazy(() => import('views/perbandingan')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -173,6 +182,18 @@ const MainRoutes = {
     {
       path: 'statistik/perdagangan',
       element: <Perdagangan />
+    },
+    {
+      path: 'statistik/pengeluaran',
+      element: <Pengeluaran />
+    },
+    {
+      path: 'statistik/neraca',
+      element: <Neraca />
+    },
+    {
+      path: 'statistik/perbandingan',
+      element: <Perbandingan />
     },
     {
       path: 'typography',

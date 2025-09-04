@@ -27,10 +27,10 @@ const menuItems = {
     pertanian,
     industri,
     pariwisata,
-    perdagangan
-    // pengeluaran,
-    // neraca,
-    // perbandingan
+    perdagangan,
+    pengeluaran,
+    neraca,
+    perbandingan
     // pages,
     // utilities
   ]
