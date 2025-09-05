@@ -1,4 +1,4 @@
-// StackedPDRBCard.jsx
+// LajuPDRBLapusCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -6,7 +6,6 @@ import {
   CardContent,
   Typography,
   Box,
-  Tooltip as MuiTooltip,
   FormControl,
   Select,
   MenuItem,
@@ -16,19 +15,18 @@ import {
   ListItemText,
   Paper
 } from '@mui/material';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-export default function StackedPDRBCard({ isLoading, data }) {
+export default function LajuPDRBLapusCard({ isLoading, data }) {
   const [chartData, setChartData] = useState([]);
   const [kategoriList, setKategoriList] = useState([]);
   const [kategoriMap, setKategoriMap] = useState({});
   const [sumber, setSumber] = useState('');
-  const [chartType, setChartType] = useState('area');
   const [selectedKategori, setSelectedKategori] = useState([]);
+  const [chartType, setChartType] = useState('line'); // NEW STATE
 
-  // tambahan state tahun
   const [tahunAwal, setTahunAwal] = useState('');
   const [tahunAkhir, setTahunAkhir] = useState('');
   const [tahunList, setTahunList] = useState([]);
@@ -71,32 +69,23 @@ export default function StackedPDRBCard({ isLoading, data }) {
     setKategoriMap(map);
     if (selectedKategori.length === 0) setSelectedKategori(kategoriArr);
 
+    // Grouping data berdasarkan tahun
     const grouped = {};
     data.forEach((item) => {
       const th = item.tahun || 'Tidak Diketahui';
       const kat = String(item.kategori).trim();
-      const val = toNumber(item['PDRB ADHB (miliar rupiah)']);
-      const distribusi = toNumber(item['distribusi PDRB ADHB']);
+      const val = toNumber(item['laju pertumbuhan PDRB ADHK']); // ambil laju pertumbuhan (%)
 
       if (!grouped[th]) {
         grouped[th] = { tahun: th };
         kategoriArr.forEach((k) => {
-          grouped[th][k] = { value: 0, distribusi: 0 };
+          grouped[th][k] = 0;
         });
       }
-      grouped[th][kat].value += val;
-      grouped[th][kat].distribusi = distribusi;
+      grouped[th][kat] = val;
     });
 
-    const result = Object.values(grouped).map((row) => {
-      const newRow = { tahun: row.tahun };
-      kategoriArr.forEach((k) => {
-        newRow[k] = row[k].value;
-        newRow[`${k}_distribusi`] = row[k].distribusi;
-      });
-      return newRow;
-    });
-
+    const result = Object.values(grouped);
     setChartData(result);
 
     // daftar tahun
@@ -110,7 +99,7 @@ export default function StackedPDRBCard({ isLoading, data }) {
     }
   }, [data]);
 
-  // data terfilter sesuai rentang tahun
+  // filter sesuai range tahun
   const filteredChartData = chartData.filter((d) => (!tahunAwal || d.tahun >= tahunAwal) && (!tahunAkhir || d.tahun <= tahunAkhir));
 
   const colors = [
@@ -132,23 +121,17 @@ export default function StackedPDRBCard({ isLoading, data }) {
     '#3182bd',
     '#f7b6d2'
   ];
-
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div style={{ background: 'white', border: '1px solid #ccc', padding: 8 }}>
           <strong>{label}</strong>
           <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-            {payload.map((entry, idx) => {
-              const distribusiVal = entry.payload?.[`${entry.name}_distribusi`] || 0;
-              const formattedValue = entry.value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-              const formattedDistribusi = distribusiVal.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-              return (
-                <li key={idx} style={{ color: entry.color }}>
-                  {entry.name}: Rp{formattedValue} miliar ({formattedDistribusi}%)
-                </li>
-              );
-            })}
+            {payload.map((entry, idx) => (
+              <li key={idx} style={{ color: entry.color }}>
+                {entry.name}: {entry.value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              </li>
+            ))}
           </ul>
         </div>
       );
@@ -156,70 +139,73 @@ export default function StackedPDRBCard({ isLoading, data }) {
     return null;
   };
 
-  const CustomLegend = () => {
-    return (
-      <Paper
-        elevation={1}
+  const CustomLegend = () => (
+    <Paper
+      elevation={1}
+      sx={{
+        p: 0,
+        mt: isMobile ? 2 : 0,
+        mb: isMobile ? 2 : 0,
+        flex: isMobile ? '0 0 auto' : '0 0 220px',
+        maxHeight: chartHeight - 30,
+        overflowY: 'auto',
+        borderRadius: 2
+      }}
+    >
+      <Box
         sx={{
-          p: 0,
-          mt: isMobile ? 2 : 0,
-          ml: isMobile ? 0 : 0,
-          mb: isMobile ? 2 : 0,
-          flex: isMobile ? '0 0 auto' : '0 0 220px',
-          maxHeight: chartHeight - 30,
-          overflowY: 'auto',
-          borderRadius: 2
+          position: 'sticky',
+          top: 0,
+          bgcolor: 'background.paper',
+          zIndex: 2,
+          p: 1,
+          borderBottom: '1px solid',
+          borderColor: 'divider'
         }}
       >
-        <Box
-          sx={{
-            position: 'sticky',
-            top: 0,
-            bgcolor: 'background.paper',
-            zIndex: 2,
-            p: 1,
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            boxShadow: '0px 2px 4px rgba(0,0,0,0.05)'
-          }}
-        >
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            Kategori Lapangan Usaha
-          </Typography>
-        </Box>
-
-        <Box sx={{ pb: 2, pt: 1, pl: 2, pr: 2 }}>
-          {selectedKategori.map((kat, idx) => {
-            const color = colors[idx % colors.length];
-            const lapangan = kategoriMap[kat] || kat;
-            return (
-              <Box key={kat} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <Box sx={{ minWidth: 14, height: 14, bgcolor: color, borderRadius: 0.5, mr: 1 }} />
-                <Typography variant="caption" sx={{ color: theme.palette.text.primary }}>
-                  {kat} ({lapangan})
-                </Typography>
-              </Box>
-            );
-          })}
-        </Box>
-      </Paper>
-    );
-  };
+        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+          Kategori Lapangan Usaha
+        </Typography>
+      </Box>
+      <Box sx={{ pb: 2, pt: 1, pl: 2, pr: 2 }}>
+        {selectedKategori.map((kat, idx) => {
+          const color = colors[idx % colors.length];
+          const lapangan = kategoriMap[kat] || kat;
+          return (
+            <Box key={kat} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box sx={{ minWidth: 14, height: 14, bgcolor: color, borderRadius: 0.5, mr: 1 }} />
+              <Typography variant="caption">
+                {kat} ({lapangan})
+              </Typography>
+            </Box>
+          );
+        })}
+      </Box>
+    </Paper>
+  );
 
   return (
     <Card sx={{ borderRadius: 2, height: '100%' }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, textAlign: 'center', color: theme.palette.text.primary }}>
-          PDRB Atas Dasar Harga Berlaku Menurut Lapangan Usaha di Kabupaten Sumba Barat
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, textAlign: 'center' }}>
+          Laju Pertumbuhan PDRB ADHK Menurut Lapangan Usaha di Kabupaten Sumba Barat
         </Typography>
 
         {/* Dropdowns */}
-        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-          {/* Dropdown kategori */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: 2,
+            mb: 2,
+            flexWrap: 'wrap'
+          }}
+        >
+          {/* Pilih kategori */}
           <FormControl size="small" sx={{ minWidth: isMobile ? '100%' : 300 }}>
             <InputLabel id="kategori-select-label" sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
               Pilih Kategori Lapangan Usaha
-            </InputLabel>
+            </InputLabel>{' '}
             <Select
               labelId="kategori-select-label"
               multiple
@@ -238,24 +224,7 @@ export default function StackedPDRBCard({ isLoading, data }) {
               }}
               input={<OutlinedInput label="Pilih Kategori Lapangan Usaha" />}
               renderValue={(selected) => selected.join(', ')}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: 300,
-                    width: 'auto',
-                    overflowX: 'auto',
-                    whiteSpace: 'nowrap',
-                    fontSize: isMobile ? '0.75rem' : '0.875rem'
-                  }
-                },
-                anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-                transformOrigin: { vertical: 'top', horizontal: 'left' }
-              }}
-              sx={{
-                '& .MuiSelect-select': {
-                  fontSize: isMobile ? '0.75rem' : '0.875rem'
-                }
-              }}
+              MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
             >
               <MenuItem
                 value="ALL"
@@ -263,60 +232,31 @@ export default function StackedPDRBCard({ isLoading, data }) {
                 sx={{
                   bgcolor: selectedKategori.length === kategoriList.length ? 'error.light' : 'success.light',
                   borderRadius: 1,
-                  '&:hover': { bgcolor: selectedKategori.length === kategoriList.length ? 'error.light' : 'success.light' },
-                  fontSize: isMobile ? '0.75rem' : '0.875rem'
+                  '&:hover': { bgcolor: selectedKategori.length === kategoriList.length ? 'error.light' : 'success.light' }
                 }}
               >
                 <Checkbox
                   indeterminate={selectedKategori.length > 0 && selectedKategori.length < kategoriList.length}
                   checked={kategoriList.length > 0 && selectedKategori.length === kategoriList.length}
-                  sx={{
-                    color: selectedKategori.length === kategoriList.length ? 'error.main' : 'success.main',
-                    '& .MuiSvgIcon-root': { fontSize: isMobile ? 16 : 20 }
-                  }}
+                  sx={{ color: selectedKategori.length === kategoriList.length ? 'error.main' : 'success.main' }}
                 />
-                <ListItemText
-                  primary={
-                    selectedKategori.length === kategoriList.length
-                      ? 'Hapus Semua Kategori Lapangan Usaha'
-                      : 'Pilih Semua Kategori Lapangan Usaha'
-                  }
-                  primaryTypographyProps={{
-                    sx: {
-                      fontWeight: 600,
-                      color: selectedKategori.length === kategoriList.length ? 'error.main' : 'success.main',
-                      fontSize: isMobile ? '0.75rem' : '0.875rem',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden'
-                    }
-                  }}
-                />
+                <ListItemText primary={selectedKategori.length === kategoriList.length ? 'Hapus Semua Kategori' : 'Pilih Semua Kategori'} />
               </MenuItem>
-
               {kategoriList.map((kat) => (
-                <MenuItem key={kat} value={kat} sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
-                  <Checkbox checked={selectedKategori.indexOf(kat) > -1} sx={{ '& .MuiSvgIcon-root': { fontSize: isMobile ? 16 : 20 } }} />
-                  <ListItemText
-                    primary={`${kat} (${kategoriMap[kat] || kat})`}
-                    primaryTypographyProps={{
-                      sx: {
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        fontSize: isMobile ? '0.75rem' : '0.875rem'
-                      }
-                    }}
-                  />
+                <MenuItem key={kat} value={kat}>
+                  <Checkbox checked={selectedKategori.indexOf(kat) > -1} />
+                  <ListItemText primary={`${kat} (${kategoriMap[kat] || kat})`} />
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
 
-          {/* Dropdown jenis grafik */}
-          <FormControl size="small" sx={{ minWidth: 160 }}>
+          {/* Dropdown chart type */}
+          <FormControl size="small" sx={{ minWidth: 150 }}>
             <InputLabel id="chart-type-label">Jenis Grafik</InputLabel>
             <Select labelId="chart-type-label" value={chartType} label="Jenis Grafik" onChange={(e) => setChartType(e.target.value)}>
-              <MenuItem value="area">Stacked Area</MenuItem>
               <MenuItem value="line">Line Chart</MenuItem>
+              <MenuItem value="bar">Bar Chart</MenuItem>
             </Select>
           </FormControl>
 
@@ -361,39 +301,23 @@ export default function StackedPDRBCard({ isLoading, data }) {
         </Box>
 
         {/* Chart + Legend */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            flex: 1,
-            minHeight: chartHeight
-          }}
-        >
+        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flex: 1, minHeight: chartHeight }}>
           <CustomLegend />
           <Box sx={{ flex: 1, minHeight: chartHeight }}>
             {filteredChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={chartHeight}>
-                {chartType === 'area' ? (
-                  <AreaChart data={filteredChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                    <XAxis dataKey="tahun" />
-                    <YAxis tickFormatter={(val) => `Rp${val.toLocaleString('id-ID')}`} width={isMobile ? 60 : 80} />
-                    <Tooltip content={<CustomTooltip />} />
-                    {selectedKategori.map((kat, idx) => (
-                      <Area
-                        key={kat}
-                        type="monotone"
-                        dataKey={kat}
-                        stackId="1"
-                        stroke={colors[idx % colors.length]}
-                        fill={colors[idx % colors.length]}
-                        name={kat}
-                      />
-                    ))}
-                  </AreaChart>
-                ) : (
+                {chartType === 'line' ? (
                   <LineChart data={filteredChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                     <XAxis dataKey="tahun" />
-                    <YAxis tickFormatter={(val) => `Rp${val.toLocaleString('id-ID')}`} width={isMobile ? 60 : 80} />
+                    <YAxis
+                      tickFormatter={(val) =>
+                        `${val.toLocaleString('id-ID', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2
+                        })}%`
+                      }
+                      width={isMobile ? 50 : 70}
+                    />
                     <Tooltip content={<CustomTooltip />} />
                     {selectedKategori.map((kat, idx) => (
                       <Line
@@ -403,14 +327,27 @@ export default function StackedPDRBCard({ isLoading, data }) {
                         stroke={colors[idx % colors.length]}
                         name={kat}
                         dot={{ r: 3, fill: colors[idx % colors.length], stroke: colors[idx % colors.length] }}
-                        activeDot={{
-                          r: 4,
-                          fill: colors[idx % colors.length],
-                          stroke: colors[idx % colors.length]
-                        }}
+                        activeDot={{ r: 5, fill: colors[idx % colors.length], stroke: colors[idx % colors.length] }}
                       />
                     ))}
                   </LineChart>
+                ) : (
+                  <BarChart data={filteredChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                    <XAxis dataKey="tahun" />
+                    <YAxis
+                      tickFormatter={(val) =>
+                        `${val.toLocaleString('id-ID', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2
+                        })}%`
+                      }
+                      width={isMobile ? 50 : 70}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    {selectedKategori.map((kat, idx) => (
+                      <Bar key={kat} dataKey={kat} fill={colors[idx % colors.length]} name={kat} barSize={isMobile ? 20 : 40} />
+                    ))}
+                  </BarChart>
                 )}
               </ResponsiveContainer>
             ) : (
@@ -431,7 +368,7 @@ export default function StackedPDRBCard({ isLoading, data }) {
   );
 }
 
-StackedPDRBCard.propTypes = {
+LajuPDRBLapusCard.propTypes = {
   isLoading: PropTypes.bool,
   data: PropTypes.array
 };

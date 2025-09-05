@@ -7,7 +7,9 @@ import { Grid, Box, CardContent, Paper, Typography, FormControl, Select, MenuIte
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
-import PendudukMiskinBarChart from './perbandingan-component/PendudukMiskinBarChart';
+import PendudukMiskinKabkotCard from './perbandingan-component/PendudukMiskinKabkotCard';
+import LajuADHKKabkotCard from './perbandingan-component/LajuADHKKabkotCard';
+import IPMKabkotCard from './perbandingan-component/IPMKabKotaCard';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -41,9 +43,6 @@ export default function Perdagangan() {
   // json untuk 13.4 IPM KDA
   const [json134, setJson134] = useState([]);
 
-  const [tahunList, setTahunList] = useState([]);
-  const [tahun, setTahun] = useState('');
-
   useEffect(() => {
     setLoading(false);
   }, []);
@@ -57,11 +56,6 @@ export default function Perdagangan() {
       .then((res) => res.json())
       .then((jsonData) => {
         setJson132(jsonData);
-
-        // isi tahunList
-        const tahunUnik = [...new Set(jsonData.map((d) => d.tahun))].sort();
-        setTahunList(tahunUnik);
-        if (tahunUnik.length > 0) setTahun(tahunUnik[tahunUnik.length - 1]);
       });
   }, []);
 
@@ -101,55 +95,19 @@ export default function Perdagangan() {
       }
     >
       <CardContent>
-        {/* Filter Tahun */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 3 }}>
-          <Stack direction="row" spacing={2}>
-            <FormControl size="small">
-              <Typography variant="caption" sx={{ mb: 0.5, fontWeight: 'bold', color: 'text.secondary' }}>
-                Tahun
-              </Typography>
-              <Select value={tahun} onChange={(e) => setTahun(e.target.value)} sx={{ borderRadius: 3, fontWeight: 'bold', height: 40 }}>
-                {tahunList.map((t) => (
-                  <MenuItem key={t} value={t}>
-                    {t}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        </Box>
-
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12}>
-            <PendudukMiskinBarChart isLoading={isLoading} data={json133} />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahPasarSemiPermanenCard isLoading={isLoading} data={json73} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahPasarTanpaBangunanCard isLoading={isLoading} data={json73} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahMinimarketCard isLoading={isLoading} data={json73} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahRestoranCard isLoading={isLoading} data={json73} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            {/* <JumlahPedagangCard isLoading={isLoading} data={json112} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+            <LajuADHKKabkotCard isLoading={isLoading} data={json132} />
           </Grid>
         </Grid>
-        <Grid container spacing={2} mt={0.5}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12}>
-            {/* <BarSaranaPerdaganganDesaCard isLoading={isLoading} data={json73} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+            <PendudukMiskinKabkotCard isLoading={isLoading} data={json133} />
           </Grid>
         </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={6}>
-            {/* <PiePedagangCard isLoading={isLoading} data={json112} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            {/* <BarPedagangCard isLoading={isLoading} data={json112} tahun={tahun} kecamatan={selectedKecamatan} /> */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12} lg={12}>
+            <IPMKabkotCard isLoading={isLoading} data={json134} />
           </Grid>
         </Grid>
       </CardContent>
