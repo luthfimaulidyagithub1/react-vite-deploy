@@ -76,53 +76,22 @@ export default function Kemiskinan() {
             color: (theme) => theme.palette.grey[900]
           }}
         >
-          Keadaan Kemiskinan di Kabupaten Sumba Barat, {tahun}
+          Keadaan Kemiskinan di Kabupaten Sumba Barat
         </Typography>
       }
     >
-      <CardContent>
-        {/* Filter Tahun & Kecamatan */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 3 }}>
-          <Stack direction="row" spacing={2}>
-            {/* <FormControl size="small">
-              <Typography variant="caption" sx={{ mb: 0.5, fontWeight: 'bold', color: 'text.secondary' }}>
-                Tahun
-              </Typography>
-              <Select value={tahun} onChange={(e) => setTahun(e.target.value)} sx={{ borderRadius: 3, fontWeight: 'bold', height: 40 }}>
-                {tahunList.map((t) => (
-                  <MenuItem key={t} value={t}>
-                    {t}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl size="small">
-              <Typography variant="caption" sx={{ mb: 0.5, fontWeight: 'bold', color: 'text.secondary' }}>
-                Tahun
-              </Typography>
-              <Select value={tahun} onChange={(e) => setTahun(e.target.value)} sx={{ borderRadius: 3, fontWeight: 'bold', height: 40 }}>
-                {tahunList.map((t) => (
-                  <MenuItem key={t} value={t}>
-                    {t}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
-          </Stack>
-        </Box>
-
+      <CardContent sx={{ pt: 0, pb: 0 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12}>
             <GarisKemiskinanLineCard isLoading={isLoading} data={json441} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
-        <Grid container spacing={2} mt={0.5}>
+        <Grid container spacing={2} pt={0}>
           <Grid item xs={12} md={12} lg={12}>
             <PendudukMiskinLineCard isLoading={isLoading} data={json441} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
-        <Grid container spacing={2} mt={0.5}>
+        <Grid container spacing={2} pt={0}>
           <Grid item xs={12} md={12} lg={12}>
             <IndeksLineChart isLoading={isLoading} data={json441} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>

@@ -109,7 +109,7 @@ export default function PieBAKCard({ isLoading, data, tahun }) {
                     cx="50%"
                     cy="55%"
                     outerRadius="80%"
-                    paddingAngle={3}
+                    paddingAngle={0}
                     dataKey="value"
                     label={renderCustomizedLabel}
                     labelLine={false}

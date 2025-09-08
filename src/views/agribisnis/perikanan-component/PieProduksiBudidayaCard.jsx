@@ -116,7 +116,7 @@ export default function PieProduksiBudidayaCard({ isLoading, data, tahun, kecama
                     cx="50%"
                     cy="50%"
                     outerRadius="70%"
-                    paddingAngle={3}
+                    paddingAngle={0}
                     dataKey="value"
                     label={renderCustomizedLabel}
                     labelLine={false}

@@ -1,4 +1,3 @@
-// PDRBPengeluaranLineCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -16,7 +15,6 @@ import {
   Paper
 } from '@mui/material';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-// import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -25,6 +23,7 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
   const [jenisList, setJenisList] = useState([]);
   const [sumber, setSumber] = useState('');
   const [selectedJenis, setSelectedJenis] = useState([]);
+  const [catatanByTahun, setCatatanByTahun] = useState({}); // State untuk catatan
 
   const [tahunAwal, setTahunAwal] = useState('');
   const [tahunAkhir, setTahunAkhir] = useState('');
@@ -42,6 +41,7 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
       setChartData([]);
       setJenisList([]);
       setSumber('');
+      setCatatanByTahun({}); // Reset catatan
       return;
     }
 
@@ -54,18 +54,23 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
       return isNaN(num) ? 0 : num;
     };
 
-    // Ambil semua jenis pengeluaran
     const jenisSet = new Set();
+    const catatanMap = {}; // Objek untuk menyimpan catatan per tahun
+
     data.forEach((item) => {
       if (item['jenis pengeluaran']) {
         jenisSet.add(String(item['jenis pengeluaran']).trim());
       }
+      // Tambahkan logika untuk menyimpan catatan
+      if (item.tahun && item.catatan && item.catatan.trim() !== '-' && item.catatan.trim() !== '') {
+        catatanMap[item.tahun] = item.catatan;
+      }
     });
+
     const jenisArr = Array.from(jenisSet);
     setJenisList(jenisArr);
     if (selectedJenis.length === 0) setSelectedJenis(jenisArr);
 
-    // Group data per tahun
     const grouped = {};
     data.forEach((item) => {
       const th = item.tahun || 'Tidak Diketahui';
@@ -83,8 +88,8 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
 
     const result = Object.values(grouped);
     setChartData(result);
+    setCatatanByTahun(catatanMap); // Set state catatan
 
-    // daftar tahun
     const tahunArr = result.map((d) => d.tahun).sort();
     setTahunList(tahunArr);
     if (!tahunAwal && tahunArr.length > 0) setTahunAwal(tahunArr[0]);
@@ -95,8 +100,12 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
     }
   }, [data]);
 
-  // filter sesuai range tahun
   const filteredChartData = chartData.filter((d) => (!tahunAwal || d.tahun >= tahunAwal) && (!tahunAkhir || d.tahun <= tahunAkhir));
+
+  // Filter catatan berdasarkan rentang tahun yang dipilih
+  const filteredCatatan = Object.entries(catatanByTahun).filter(([tahun]) => {
+    return (!tahunAwal || tahun >= tahunAwal) && (!tahunAkhir || tahun <= tahunAkhir);
+  });
 
   const colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
@@ -167,13 +176,11 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
           PDRB ADHB Menurut Jenis Pengeluaran di Kabupaten Sumba Barat
         </Typography>
 
-        {/* Dropdowns */}
         <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-          {/* Pilih jenis pengeluaran */}
           <FormControl size="small" sx={{ minWidth: isMobile ? '100%' : 300 }}>
             <InputLabel id="kategori-select-label" sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
               Pilih Jenis Pengeluaran
-            </InputLabel>{' '}
+            </InputLabel>
             <Select
               labelId="jenis-select-label"
               multiple
@@ -191,12 +198,7 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
                 }
               }}
               input={<OutlinedInput label="Pilih Jenis Pengeluaran" />}
-              // tampilkan angka urut sesuai indeks di jenisList
-              renderValue={(selected) =>
-                selected
-                  .map((val) => jenisList.indexOf(val) + 1) // ubah ke angka urut
-                  .join(', ')
-              }
+              renderValue={(selected) => selected.map((val) => jenisList.indexOf(val) + 1).join(', ')}
               MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
             >
               <MenuItem
@@ -221,14 +223,12 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
               {jenisList.map((jenis) => (
                 <MenuItem key={jenis} value={jenis}>
                   <Checkbox checked={selectedJenis.indexOf(jenis) > -1} />
-                  {/* label dropdown tetap nama jenis */}
                   <ListItemText primary={jenis} />
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
 
-          {/* Dropdown jenis grafik */}
           <FormControl size="small" sx={{ minWidth: 150 }}>
             <InputLabel id="chart-type-label">Jenis Grafik</InputLabel>
             <Select labelId="chart-type-label" value={chartType} label="Jenis Grafik" onChange={(e) => setChartType(e.target.value)}>
@@ -237,7 +237,6 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
             </Select>
           </FormControl>
 
-          {/* Dropdown tahun awal */}
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel id="tahun-awal-label">Tahun Awal</InputLabel>
             <Select
@@ -261,7 +260,6 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
             </Select>
           </FormControl>
 
-          {/* Dropdown tahun akhir */}
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel id="tahun-akhir-label">Tahun Akhir</InputLabel>
             <Select labelId="tahun-akhir-label" value={tahunAkhir} label="Tahun Akhir" onChange={(e) => setTahunAkhir(e.target.value)}>
@@ -276,7 +274,6 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
           </FormControl>
         </Box>
 
-        {/* Chart + Legend */}
         <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flex: 1, minHeight: chartHeight }}>
           <CustomLegend />
           <Box sx={{ flex: 1, minHeight: chartHeight }}>
@@ -321,6 +318,24 @@ export default function PDRBPengeluaranLineCard({ isLoading, data }) {
         {sumber && (
           <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'left', fontStyle: 'italic' }}>
             Sumber: {sumber}
+          </Typography>
+        )}
+
+        {/* Bagian Catatan yang Diperbarui */}
+        {filteredCatatan.length > 0 ? (
+          <>
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left', fontStyle: 'italic' }}>
+              Catatan:
+            </Typography>
+            {filteredCatatan.map(([tahun, cttn]) => (
+              <Typography key={tahun} variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left' }}>
+                {tahun} {cttn}
+              </Typography>
+            ))}
+          </>
+        ) : (
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left', fontStyle: 'italic' }}>
+            Catatan: -
           </Typography>
         )}
       </CardContent>

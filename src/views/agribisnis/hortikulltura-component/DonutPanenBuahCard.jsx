@@ -171,7 +171,7 @@ export default function DonutPanenBuahCard({ isLoading, data, tahun, kecamatan }
                   cy="50%"
                   innerRadius="30%"
                   outerRadius="70%"
-                  paddingAngle={3}
+                  paddingAngle={0}
                   dataKey="value"
                   label={chartData.length > 0 ? ({ percent }) => `${(percent * 100).toFixed(1)}%` : () => ''}
                 >

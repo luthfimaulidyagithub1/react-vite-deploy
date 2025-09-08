@@ -1,7 +1,7 @@
 // PiePerkembanganDesaCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardContent, Typography, Box } from '@mui/material';
+import { Card, CardContent, Typography, Box, Paper } from '@mui/material';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 
@@ -14,6 +14,28 @@ const getTextColor = (hex) => {
   const b = rgb & 0xff;
   const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
   return luminance > 150 ? '#000' : '#fff';
+};
+
+// Komponen Tooltip Kustom
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    const desaNames = data.desas.join(', ');
+    return (
+      <Paper elevation={3} sx={{ p: 2, minWidth: 200 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+          {data.name}
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+          Jumlah desa/kelurahan {data.name}: {data.value}
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 0.5 }}>
+          Nama desa/kelurahan: {desaNames}
+        </Typography>
+      </Paper>
+    );
+  }
+  return null;
 };
 
 export default function PiePerkembanganDesaCard({ isLoading, data, tahun, kecamatan }) {
@@ -39,16 +61,21 @@ export default function PiePerkembanganDesaCard({ isLoading, data, tahun, kecama
       filtered = filtered.filter((item) => String(item.kecamatan).trim() === String(kecamatan).trim());
     }
 
-    // kelompokkan berdasarkan kategori
+    // kelompokkan berdasarkan kategori dan simpan nama desa
     const grouped = {};
     filtered.forEach((item) => {
       const kategori = String(item['tingkat perkembangan deskel']).trim();
-      grouped[kategori] = (grouped[kategori] || 0) + 1;
+      if (!grouped[kategori]) {
+        grouped[kategori] = { count: 0, desas: [] };
+      }
+      grouped[kategori].count += 1;
+      grouped[kategori].desas.push(item.deskel);
     });
 
     const result = Object.entries(grouped).map(([key, value]) => ({
       name: key,
-      value
+      value: value.count,
+      desas: value.desas
     }));
 
     setChartData(result);
@@ -83,7 +110,7 @@ export default function PiePerkembanganDesaCard({ isLoading, data, tahun, kecama
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Judul */}
         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary }}>
-          Tingkat Perkembangan Desa di Kecamatan {kecamatan}, {tahun}
+          Distribusi Desa menurut Tingkat Perkembangan Desa di Kecamatan {kecamatan}, {tahun}
         </Typography>
 
         {/* Chart */}
@@ -99,7 +126,7 @@ export default function PiePerkembanganDesaCard({ isLoading, data, tahun, kecama
                     cx="50%"
                     cy="55%"
                     outerRadius="80%"
-                    paddingAngle={3}
+                    paddingAngle={0}
                     dataKey="value"
                     label={renderCustomizedLabel}
                     labelLine={false}
@@ -108,7 +135,7 @@ export default function PiePerkembanganDesaCard({ isLoading, data, tahun, kecama
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `${value} Desa`} />
+                  <Tooltip content={<CustomTooltip />} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (

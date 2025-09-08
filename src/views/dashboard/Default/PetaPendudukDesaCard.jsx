@@ -291,24 +291,6 @@ export default function PetaPendudukDesaCard({ isLoading }) {
         return <Typography variant="body2">Data tidak tersedia</Typography>;
     }
   };
-  // const getPopupText = (indicator, value) => {
-  //   switch (indicator) {
-  //     case 'kepadatan':
-  //       const kepadatanValue = value?.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  //       return `Rata-rata terdapat ${kepadatanValue} penduduk di setiap 1 km² di desa ini.`;
-  //     case 'rasiojk':
-  //       const rasioValue = Math.round(value).toLocaleString('id-ID');
-  //       return `Terdapat sekitar ${rasioValue} penduduk laki-laki untuk setiap 100 penduduk perempuan.`;
-  //     case 'luas':
-  //       const luasValue = value?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  //       return `Luas wilayah desa: ${luasValue} km²`;
-  //     case 'penduduk':
-  //       const pendudukValue = value?.toLocaleString('id-ID');
-  //       return `Jumlah penduduk: ${pendudukValue} jiwa`;
-  //     default:
-  //       return 'Data tidak tersedia';
-  //   }
-  // };
 
   return (
     <>
@@ -320,46 +302,49 @@ export default function PetaPendudukDesaCard({ isLoading }) {
             <Typography variant="h4" align="center" sx={{ mb: 3, fontWeight: 'bold' }}>
               Peta {indikatorList.find((i) => i.key === selectedIndicator)?.label} per Desa di Kabupaten Sumba Barat
             </Typography>
-            {/* Dropdown Filter Tahun */}
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel id="year-filter-label">Tahun</InputLabel>
-              <Select
-                labelId="year-filter-label"
-                id="year-filter"
-                value={selectedYear}
-                label="Tahun"
-                onChange={(e) => setSelectedYear(e.target.value)}
-              >
-                {listYears.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {/* Dropdown Filter Kecamatan */}
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>Kecamatan</InputLabel>
-              <Select value={selectedKec} label="Kecamatan" onChange={(e) => setSelectedKec(e.target.value)}>
-                <MenuItem value="all">Semua Kecamatan</MenuItem>
-                {listKecamatan.map((kec) => (
-                  <MenuItem key={kec} value={kec}>
-                    {kec}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {/* Dropdown Pilih Indikator */}
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>Indikator</InputLabel>
-              <Select value={selectedIndicator} label="Indikator" onChange={(e) => setSelectedIndicator(e.target.value)}>
-                {indikatorList.map((ind) => (
-                  <MenuItem key={ind.key} value={ind.key}>
-                    {ind.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {/* Box untuk menyatukan filter dalam satu baris */}
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+              {/* Dropdown Filter Tahun */}
+              <FormControl sx={{ flexGrow: 1, minWidth: '120px' }}>
+                <InputLabel id="year-filter-label">Tahun</InputLabel>
+                <Select
+                  labelId="year-filter-label"
+                  id="year-filter"
+                  value={selectedYear}
+                  label="Tahun"
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                >
+                  {listYears.map((year) => (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* Dropdown Filter Kecamatan */}
+              <FormControl sx={{ flexGrow: 1, minWidth: '180px' }}>
+                <InputLabel>Kecamatan</InputLabel>
+                <Select value={selectedKec} label="Kecamatan" onChange={(e) => setSelectedKec(e.target.value)}>
+                  <MenuItem value="all">Semua Kecamatan</MenuItem>
+                  {listKecamatan.map((kec) => (
+                    <MenuItem key={kec} value={kec}>
+                      {kec}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* Dropdown Pilih Indikator */}
+              <FormControl sx={{ flexGrow: 1, minWidth: '150px' }}>
+                <InputLabel>Indikator</InputLabel>
+                <Select value={selectedIndicator} label="Indikator" onChange={(e) => setSelectedIndicator(e.target.value)}>
+                  {indikatorList.map((ind) => (
+                    <MenuItem key={ind.key} value={ind.key}>
+                      {ind.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
             {/* Map + Controls + Legend */}
             <Box sx={{ position: 'relative', mb: 2 }}>
               <Map
@@ -390,13 +375,11 @@ export default function PetaPendudukDesaCard({ isLoading }) {
                     anchor="top"
                   >
                     <Paper sx={{ p: 1 }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: theme.palette.orange.dark, fontSize: 15 }}>
                         {hoverInfo.nama}
                       </Typography>
-                      <Typography variant="body2">
-                        {/* Menampilkan interpretasi berdasarkan indikator */}
-                        {getPopupText(selectedIndicator, hoverInfo.value)}
-                      </Typography>
+                      {/* Menampilkan teks dari fungsi getPopupText */}
+                      {getPopupText(selectedIndicator, hoverInfo.value)}
                     </Paper>
                   </Popup>
                 )}
@@ -450,28 +433,57 @@ export default function PetaPendudukDesaCard({ isLoading }) {
 
               {/* Legend Box */}
               {showLegend && (
-                <Box sx={{ position: 'absolute', top: 60, right: 10, zIndex: 2 }}>
-                  <Paper sx={{ p: 1 }}>
-                    <Typography variant="subtitle2" gutterBottom>
-                      {legendTitles[selectedIndicator] || 'Legenda'}
-                    </Typography>
-                    {palette.map((color, idx) => {
-                      const lower = minVal + step * idx;
-                      const upper = minVal + step * (idx + 1);
-                      let label = '';
-                      if (idx === 0) label = `≤ ${upper.toFixed(0)}`;
-                      else if (idx === palette.length - 1) label = `≥ ${lower.toFixed(0)}`;
-                      else label = `${lower.toFixed(0)} - ${upper.toFixed(0)}`;
+                <Paper
+                  elevation={4}
+                  sx={{
+                    position: 'absolute',
+                    top: 60,
+                    right: 10,
+                    zIndex: 2,
+                    p: 2.5,
+                    borderRadius: '16px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(5px)'
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 'bold', mb: 1, pb: 1, borderBottom: `2px solid ${theme.palette.divider}` }}
+                  >
+                    {legendTitles[selectedIndicator] || 'Legenda'}
+                  </Typography>
+                  {palette.map((color, idx) => {
+                    const lower = minVal + step * idx;
+                    const upper = minVal + step * (idx + 1);
+                    let label = '';
+                    if (idx === 0) {
+                      label = `≤ ${upper.toFixed(0)}`;
+                    } else if (idx === palette.length - 1) {
+                      label = `≥ ${lower.toFixed(0)}`;
+                    } else {
+                      label = `${lower.toFixed(0)} - ${upper.toFixed(0)}`;
+                    }
 
-                      return (
-                        <Box key={idx} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                          <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1, border: '1px solid #000' }} />
-                          <Typography variant="caption">{label}</Typography>
-                        </Box>
-                      );
-                    })}
-                  </Paper>
-                </Box>
+                    return (
+                      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                        <Box
+                          sx={{
+                            width: 24,
+                            height: 24,
+                            backgroundColor: color,
+                            mr: 1.5,
+                            borderRadius: '4px',
+                            border: `1px solid ${theme.palette.grey[400]}`
+                          }}
+                        />
+                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                          {label}
+                        </Typography>
+                      </Box>
+                    );
+                  })}
+                </Paper>
               )}
             </Box>
 

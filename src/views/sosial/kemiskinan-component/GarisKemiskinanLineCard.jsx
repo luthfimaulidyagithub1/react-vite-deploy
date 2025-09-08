@@ -1,8 +1,22 @@
-// src/ui-component/cards/statistik/GarisKemiskinanLineCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
-import { Card, CardContent, Typography, Box, Skeleton, Dialog, DialogContent, DialogTitle, DialogActions, Button } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Skeleton,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // fungsi normalisasi key biar gampang cari field
@@ -12,11 +26,36 @@ const normalize = (str = '') =>
     .replace(/\s+/g, '')
     .replace(/[()/%]/g, '');
 
+// Komponen Dot Kustom dengan area klik lebih besar
+const CustomClickableDot = (props) => {
+  const { cx, cy, payload, theme, onClick } = props;
+
+  return (
+    <g>
+      {/* Lingkaran transparan yang lebih besar untuk area klik */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={15} // Sesuaikan ukuran radius sesuai kebutuhan
+        fill="transparent"
+        style={{ cursor: 'pointer' }}
+        onClick={() => onClick(payload)}
+      />
+      {/* Lingkaran utama (dot) yang terlihat */}
+      <circle cx={cx} cy={cy} r={5} fill={theme.palette.primary.main} stroke="#fff" strokeWidth={1} />
+    </g>
+  );
+};
+
 export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
   const theme = useTheme();
   const [chartData, setChartData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [sumber, setSumber] = useState(null);
   const [selectedPoint, setSelectedPoint] = useState(null);
+  const [tahunAwal, setTahunAwal] = useState('');
+  const [tahunAkhir, setTahunAkhir] = useState('');
+  const [availableYears, setAvailableYears] = useState([]);
 
   useEffect(() => {
     if (!Array.isArray(data) || data.length === 0) return;
@@ -31,9 +70,29 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
       };
     });
 
+    const years = mapped.map((item) => item.tahun).filter(Boolean);
+    const uniqueYears = [...new Set(years)].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    setAvailableYears(uniqueYears);
+
+    if (uniqueYears.length > 0) {
+      setTahunAwal(uniqueYears[0]);
+      setTahunAkhir(uniqueYears[uniqueYears.length - 1]);
+    }
+
     setChartData(mapped);
     if (mapped.length > 0) setSumber(mapped[0]?.sumber || null);
   }, [data]);
+
+  useEffect(() => {
+    const startIdx = chartData.findIndex((d) => d.tahun === tahunAwal);
+    const endIdx = chartData.findIndex((d) => d.tahun === tahunAkhir);
+
+    if (startIdx !== -1 && endIdx !== -1) {
+      setFilteredData(chartData.slice(startIdx, endIdx + 1));
+    } else {
+      setFilteredData(chartData);
+    }
+  }, [chartData, tahunAwal, tahunAkhir]);
 
   // formatter angka dengan koma dan 2 decimal
   const formatNumber = (num) =>
@@ -56,22 +115,21 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
           <>
             {/* Judul Chart */}
             <Typography
-              variant="subtitle1"
+              variant="h3"
               sx={{
-                // mt: -2,
                 mb: 2,
                 textAlign: 'left',
                 fontWeight: 600,
                 color: theme.palette.text.primary
               }}
             >
-              Garis Kemiskinan (Rp) per Tahun
+              Garis Kemiskinan (Rp) Kab. Sumba Barat
             </Typography>
             {/* Pengertian BPS */}
             <Typography
               variant="body2"
               sx={{
-                mb: 5,
+                mb: 4,
                 textAlign: 'left',
                 color: 'text.secondary'
               }}
@@ -80,13 +138,38 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
               setara 2.100 kilokalori per kapita per hari dan kebutuhan dasar non-makanan (perumahan, sandang, pendidikan, kesehatan, dsb).
             </Typography>
 
+            {/* Dropdown Filter Tahun */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 1 }}>
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <InputLabel>Tahun Awal</InputLabel>
+                <Select value={tahunAwal} label="Tahun Awal" onChange={(e) => setTahunAwal(e.target.value)}>
+                  {availableYears.map((year) => (
+                    <MenuItem key={year} value={year} disabled={parseInt(year, 10) >= parseInt(tahunAkhir, 10)}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <InputLabel>Tahun Akhir</InputLabel>
+                <Select value={tahunAkhir} label="Tahun Akhir" onChange={(e) => setTahunAkhir(e.target.value)}>
+                  {availableYears.map((year) => (
+                    <MenuItem key={year} value={year} disabled={parseInt(year, 10) <= parseInt(tahunAwal, 10)}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+
             {/* Chart */}
             <Box sx={{ width: '100%', height: 200 }}>
               <ResponsiveContainer>
-                <LineChart data={chartData} margin={{ right: 10, left: 10 }}>
+                <LineChart data={filteredData} margin={{ right: 20, left: 40, top: 30, bottom: 20 }}>
                   <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="#ddd" />
                   <XAxis dataKey="tahun" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} />
+                  <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(value) => `Rp${formatNumber(value)}`} />
                   <Tooltip
                     content={({ active, payload, label }) => {
                       if (active && payload && payload.length) {
@@ -127,20 +210,11 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
                     dataKey="nilai"
                     stroke={theme.palette.primary.main}
                     strokeWidth={2}
-                    dot={(props) => {
-                      const { cx, cy, payload } = props;
-                      return (
-                        <circle
-                          cx={cx}
-                          cy={cy}
-                          r={5}
-                          fill={theme.palette.primary.main}
-                          stroke="#fff"
-                          strokeWidth={1}
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => setSelectedPoint(payload)} // ✅ simpan point yg diklik
-                        />
-                      );
+                    dot={<CustomClickableDot theme={theme} onClick={setSelectedPoint} />}
+                    onClick={(e) => {
+                      if (e.payload) {
+                        setSelectedPoint(e.payload);
+                      }
                     }}
                     name="garis kemiskinan"
                   />
@@ -166,7 +240,7 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
 
             {/* Modal interpretasi */}
             <Dialog open={Boolean(selectedPoint)} onClose={() => setSelectedPoint(null)} maxWidth="xs" fullWidth>
-              <DialogTitle>Interpretasi Data</DialogTitle>
+              <DialogTitle>Interpretasi Garis Kemiskinan</DialogTitle>
               <DialogContent>
                 {selectedPoint && (
                   <>
@@ -177,11 +251,10 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
                       Garis Kemiskinan: <b>Rp{formatNumber(selectedPoint.nilai)}</b>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Artinya: Pada tahun <b>{selectedPoint.tahun}</b>, rata-rata kebutuhan minimum pengeluaran penduduk yang tidak
-                      dikategorikan miskin sebesar <b>Rp{formatNumber(selectedPoint.nilai)}</b>. <br />
+                      Artinya: Pada tahun <b>{selectedPoint.tahun}</b>, rata-rata kebutuhan minimum pengeluaran penduduk Kab. Sumba Barat
+                      yang tidak dikategorikan miskin sebesar <b>Rp{formatNumber(selectedPoint.nilai)}</b> per kapita per bulan. <br />
                       Penduduk dengan rata-rata pengeluaran per kapita per bulan di bawah angka tersebut dikategorikan sebagai penduduk
-                      miskin. Semakin tinggi nilainya, semakin besar biaya hidup minimum yang harus dipenuhi.
-                      {/* Nilai ini mencerminkan rata-rata kebutuhan minimum pengeluaran penduduk miskin pada tahun {selectedPoint.tahun}. */}
+                      miskin. <br /> Semakin tinggi nilainya, semakin besar biaya hidup minimum yang harus dipenuhi.
                     </Typography>
                   </>
                 )}

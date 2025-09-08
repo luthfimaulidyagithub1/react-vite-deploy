@@ -104,7 +104,7 @@ export default function PieAKCard({ isLoading, data, tahun }) {
                     cx="50%"
                     cy="50%"
                     outerRadius="80%"
-                    paddingAngle={3}
+                    paddingAngle={0}
                     dataKey="value"
                     label={renderCustomizedLabel}
                     labelLine={false}

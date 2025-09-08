@@ -148,7 +148,7 @@ export default function DonutPendudukDesaCard({ isLoading, data, tahun, kecamata
                     cy="50%"
                     innerRadius="40%" // persentase supaya ikut mengecil
                     outerRadius="70%"
-                    paddingAngle={3}
+                    paddingAngle={0}
                     dataKey="value"
                     label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
                   >

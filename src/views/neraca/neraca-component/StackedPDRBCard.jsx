@@ -1,4 +1,3 @@
-// StackedPDRBCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -6,7 +5,6 @@ import {
   CardContent,
   Typography,
   Box,
-  Tooltip as MuiTooltip,
   FormControl,
   Select,
   MenuItem,
@@ -25,10 +23,9 @@ export default function StackedPDRBCard({ isLoading, data }) {
   const [kategoriList, setKategoriList] = useState([]);
   const [kategoriMap, setKategoriMap] = useState({});
   const [sumber, setSumber] = useState('');
+  const [catatanByTahun, setCatatanByTahun] = useState({});
   const [chartType, setChartType] = useState('area');
   const [selectedKategori, setSelectedKategori] = useState([]);
-
-  // tambahan state tahun
   const [tahunAwal, setTahunAwal] = useState('');
   const [tahunAkhir, setTahunAkhir] = useState('');
   const [tahunList, setTahunList] = useState([]);
@@ -44,6 +41,7 @@ export default function StackedPDRBCard({ isLoading, data }) {
       setKategoriList([]);
       setKategoriMap({});
       setSumber('');
+      setCatatanByTahun({});
       return;
     }
 
@@ -58,6 +56,8 @@ export default function StackedPDRBCard({ isLoading, data }) {
 
     const kategoriSet = new Set();
     const map = {};
+    const catatanMap = {};
+
     data.forEach((item) => {
       if (item.kategori && item['lapangan usaha']) {
         const kat = String(item.kategori).trim();
@@ -65,7 +65,11 @@ export default function StackedPDRBCard({ isLoading, data }) {
         kategoriSet.add(kat);
         map[kat] = lap;
       }
+      if (item.tahun && item.catatan && item.catatan.trim() !== '-') {
+        catatanMap[item.tahun] = item.catatan;
+      }
     });
+
     const kategoriArr = Array.from(kategoriSet);
     setKategoriList(kategoriArr);
     setKategoriMap(map);
@@ -98,20 +102,26 @@ export default function StackedPDRBCard({ isLoading, data }) {
     });
 
     setChartData(result);
+    setCatatanByTahun(catatanMap);
 
-    // daftar tahun
     const tahunArr = result.map((d) => d.tahun).sort();
     setTahunList(tahunArr);
-    if (!tahunAwal && tahunArr.length > 0) setTahunAwal(tahunArr[0]);
-    if (!tahunAkhir && tahunArr.length > 0) setTahunAkhir(tahunArr[tahunArr.length - 1]);
+    if (tahunArr.length > 0) {
+      if (!tahunAwal) setTahunAwal(tahunArr[0]);
+      if (!tahunAkhir) setTahunAkhir(tahunArr[tahunArr.length - 1]);
+    }
 
-    if (data.length > 0 && data[0].sumber) {
-      setSumber(data[0].sumber);
+    if (data.length > 0) {
+      if (data[0].sumber) setSumber(data[0].sumber);
     }
   }, [data]);
 
-  // data terfilter sesuai rentang tahun
   const filteredChartData = chartData.filter((d) => (!tahunAwal || d.tahun >= tahunAwal) && (!tahunAkhir || d.tahun <= tahunAkhir));
+
+  // Logika baru untuk memfilter catatan berdasarkan rentang tahun
+  const filteredCatatan = Object.entries(catatanByTahun).filter(([tahun]) => {
+    return (!tahunAwal || tahun >= tahunAwal) && (!tahunAkhir || tahun <= tahunAkhir);
+  });
 
   const colors = [
     '#1f77b4',
@@ -213,9 +223,7 @@ export default function StackedPDRBCard({ isLoading, data }) {
           PDRB Atas Dasar Harga Berlaku Menurut Lapangan Usaha di Kabupaten Sumba Barat
         </Typography>
 
-        {/* Dropdowns */}
         <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-          {/* Dropdown kategori */}
           <FormControl size="small" sx={{ minWidth: isMobile ? '100%' : 300 }}>
             <InputLabel id="kategori-select-label" sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
               Pilih Kategori Lapangan Usaha
@@ -311,7 +319,6 @@ export default function StackedPDRBCard({ isLoading, data }) {
             </Select>
           </FormControl>
 
-          {/* Dropdown jenis grafik */}
           <FormControl size="small" sx={{ minWidth: 160 }}>
             <InputLabel id="chart-type-label">Jenis Grafik</InputLabel>
             <Select labelId="chart-type-label" value={chartType} label="Jenis Grafik" onChange={(e) => setChartType(e.target.value)}>
@@ -320,7 +327,6 @@ export default function StackedPDRBCard({ isLoading, data }) {
             </Select>
           </FormControl>
 
-          {/* Dropdown tahun awal */}
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel id="tahun-awal-label">Tahun Awal</InputLabel>
             <Select
@@ -330,8 +336,6 @@ export default function StackedPDRBCard({ isLoading, data }) {
               onChange={(e) => {
                 const newTahunAwal = e.target.value;
                 setTahunAwal(newTahunAwal);
-
-                // kalau tahun akhir <= tahun awal, reset tahun akhir
                 if (tahunAkhir && tahunAkhir <= newTahunAwal) {
                   setTahunAkhir('');
                 }
@@ -345,12 +349,11 @@ export default function StackedPDRBCard({ isLoading, data }) {
             </Select>
           </FormControl>
 
-          {/* Dropdown tahun akhir */}
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel id="tahun-akhir-label">Tahun Akhir</InputLabel>
             <Select labelId="tahun-akhir-label" value={tahunAkhir} label="Tahun Akhir" onChange={(e) => setTahunAkhir(e.target.value)}>
               {tahunList
-                .filter((th) => th > tahunAwal) // hanya tahun lebih besar
+                .filter((th) => th > tahunAwal)
                 .map((th) => (
                   <MenuItem key={th} value={th}>
                     {th}
@@ -360,7 +363,6 @@ export default function StackedPDRBCard({ isLoading, data }) {
           </FormControl>
         </Box>
 
-        {/* Chart + Legend */}
         <Box
           sx={{
             display: 'flex',
@@ -424,6 +426,24 @@ export default function StackedPDRBCard({ isLoading, data }) {
         {sumber && (
           <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'left', fontStyle: 'italic' }}>
             Sumber: {sumber}
+          </Typography>
+        )}
+
+        {/* Tampilan catatan yang sudah difilter */}
+        {filteredCatatan.length > 0 ? (
+          <>
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left', fontStyle: 'italic' }}>
+              Catatan:
+            </Typography>
+            {filteredCatatan.map(([tahun, cttn]) => (
+              <Typography key={tahun} variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left' }}>
+                {tahun} {cttn}
+              </Typography>
+            ))}
+          </>
+        ) : (
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left', fontStyle: 'italic' }}>
+            Catatan: -
           </Typography>
         )}
       </CardContent>

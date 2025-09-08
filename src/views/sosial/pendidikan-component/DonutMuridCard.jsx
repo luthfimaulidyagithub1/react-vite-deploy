@@ -148,7 +148,7 @@ export default function DonutMuridCard({ isLoading, data, tahun, kecamatan }) {
                     cy="50%"
                     innerRadius="30%"
                     outerRadius="70%"
-                    paddingAngle={3}
+                    paddingAngle={0}
                     dataKey="value"
                     label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
                   >

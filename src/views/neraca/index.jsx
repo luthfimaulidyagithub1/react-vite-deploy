@@ -117,25 +117,7 @@ export default function Perdagangan() {
         </Typography>
       }
     >
-      <CardContent>
-        {/* Filter Tahun */}
-        {/* <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 3 }}>
-          <Stack direction="row" spacing={2}>
-            <FormControl size="small">
-              <Typography variant="caption" sx={{ mb: 0.5, fontWeight: 'bold', color: 'text.secondary' }}>
-                Tahun
-              </Typography>
-              <Select value={tahun} onChange={(e) => setTahun(e.target.value)} sx={{ borderRadius: 3, fontWeight: 'bold', height: 40 }}>
-                {tahunList.map((t) => (
-                  <MenuItem key={t} value={t}>
-                    {t}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        </Box> */}
-
+      <CardContent sx={{ pt: 0, pb: 0 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12}>
             <StackedPDRBCard isLoading={isLoading} data={json121} />
