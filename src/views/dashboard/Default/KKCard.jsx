@@ -89,7 +89,7 @@ export default function KKCard({ isLoading }) {
               </Grid>
 
               <Grid>
-                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: 'success.light' }}>Jumlah KK Kab. Sumba Barat</Typography>
+                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: 'success.light' }}>Jumlah KK</Typography>
               </Grid>
             </Grid>
           </Box>

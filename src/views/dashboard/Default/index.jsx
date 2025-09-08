@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-
 // material-ui
 import Grid from '@mui/material/Grid2';
+import Typography from '@mui/material/Typography'; // <-- Tambahkan ini
+import { Box } from '@mui/material'; // <-- Tambahkan ini jika diperlukan untuk layout
 
 // project imports
 import EarningCard from './EarningCard';
@@ -18,6 +19,7 @@ import FemalePopulationCard from './FemalePopulationCard';
 import PopulationDensityCard from './PopulationDensityCard';
 import GenderRatioCard from './GenderRatioCard';
 import TotalAreaCard from './TotalAreaCard';
+import PetaPendudukDesaCard from './PetaPendudukDesaCard';
 
 import { gridSpacing } from 'store/constant';
 
@@ -35,6 +37,14 @@ export default function Dashboard() {
 
   return (
     <Grid container spacing={gridSpacing}>
+      {/* Tambahkan judul di sini */}
+      <Grid size={12}>
+        <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+            Statistik Kependudukan Kabupaten Sumba Barat
+          </Typography>
+        </Box>
+      </Grid>
       {/* Bagian card atas */}
       <Grid size={12}>
         <Grid container spacing={gridSpacing}>
@@ -76,21 +86,9 @@ export default function Dashboard() {
         </Grid>
       </Grid>
 
-      {/* Bagian bawah cards */}
-      {/* <Grid size={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid size={{ xs: 12, md: 8 }}>
-            <TotalGrowthBarChart isLoading={isLoading} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <PopularCard isLoading={isLoading} />
-          </Grid>
-        </Grid>
-      </Grid> */}
-
       {/* Panggil komponen Beranda */}
       <Grid size={12}>
-        <Beranda isLoading={isLoading} />
+        <PetaPendudukDesaCard isLoading={isLoading} />
       </Grid>
     </Grid>
   );

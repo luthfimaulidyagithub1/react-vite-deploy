@@ -21,8 +21,8 @@ import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-  //   backgroundColor: theme.palette.primary.dark,
-  //   color: theme.palette.primary.light,
+  // 	backgroundColor: theme.palette.primary.dark,
+  // 	color: theme.palette.primary.light,
   overflow: 'hidden',
   position: 'relative',
   '&:after': {
@@ -87,6 +87,8 @@ export default function PopulationDensityCard({ isLoading }) {
           }
           arrow
           placement="top"
+          enterTouchDelay={0} // Tambahkan ini
+          leaveTouchDelay={5000} // Tambahkan ini
         >
           <CardWrapper border={false} content={false}>
             <Box sx={{ p: 2 }}>

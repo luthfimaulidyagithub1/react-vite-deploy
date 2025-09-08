@@ -91,7 +91,7 @@ export default function MalePopulationCard({ isLoading }) {
 
               <Grid>
                 <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: theme.palette.primary.contrastText }}>
-                  Penduduk Laki-Laki Kab. Sumba Barat
+                  Penduduk Laki-Laki
                 </Typography>
               </Grid>
             </Grid>

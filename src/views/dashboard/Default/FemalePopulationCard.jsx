@@ -90,9 +90,7 @@ export default function FemalePopulationCard({ isLoading }) {
               </Grid>
 
               <Grid>
-                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: theme.palette.orange.light }}>
-                  Penduduk perempuan Kab. Sumba Barat
-                </Typography>
+                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: theme.palette.orange.light }}>Penduduk Perempuan</Typography>
               </Grid>
             </Grid>
           </Box>

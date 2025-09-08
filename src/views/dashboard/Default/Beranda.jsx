@@ -8,6 +8,7 @@ import { Box, CardContent, Paper, Typography, FormControl, Select, MenuItem, Sta
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import IntroPopup from '../../../ui-component/IntroPopup';
+import PetaPendudukDesaCard from './PetaPendudukDesaCard';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -391,6 +392,8 @@ export default function Beranda({ isLoading }) {
                 Sumber: BPS dan {sumberData.join(', ')}
               </Typography>
             )}
+
+            <PetaPendudukDesaCard isLoading={isLoading} />
           </CardContent>
         </MainCard>
       )}

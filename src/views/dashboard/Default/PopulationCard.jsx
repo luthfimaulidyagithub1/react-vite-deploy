@@ -89,7 +89,7 @@ export default function PopulationCard({ isLoading }) {
               </Grid>
 
               <Grid>
-                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: 'secondary.200' }}>Penduduk Kab. Sumba Barat</Typography>
+                <Typography sx={{ fontSize: '0.95rem', fontWeight: 500, color: 'secondary.200' }}>Total Penduduk</Typography>
               </Grid>
             </Grid>
           </Box>
