@@ -35,16 +35,16 @@ export default function PetaPendudukDesaCard({ isLoading }) {
   const theme = useTheme();
   const mapRef = useRef();
   const [data, setData] = useState(null);
-  const [allData, setAllData] = useState(null);
-  const [pendudukData, setPendudukData] = useState(null); // Menyimpan data penduduk asli
+  const [allData, setAllData] = useState(null); // Ini untuk GeoJSON asli
+  const [allPopulasiData, setAllPopulasiData] = useState(null); // Ini untuk data populasi
   const [hoverInfo, setHoverInfo] = useState(null);
   const [selectedKec, setSelectedKec] = useState('all');
-  const [selectedTahun, setSelectedTahun] = useState(''); // State baru untuk tahun
-  const [listTahun, setListTahun] = useState([]); // State baru untuk daftar tahun
   const [listKecamatan, setListKecamatan] = useState([]);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [showLegend, setShowLegend] = useState(false);
   const [sumberData, setSumberData] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(''); // State baru untuk tahun
+  const [listYears, setListYears] = useState([]); // State baru untuk daftar tahun
 
   const legendTitles = {
     penduduk: 'Rentang Jumlah Penduduk',
@@ -61,23 +61,21 @@ export default function PetaPendudukDesaCard({ isLoading }) {
   ];
   const [selectedIndicator, setSelectedIndicator] = useState('penduduk');
 
-  // Load GeoJSON & Data
+  // Load GeoJSON & Data Populasi
   useEffect(() => {
     Promise.all([
       fetch('/Peta_desa_5301.geojson').then((res) => res.json()),
       fetch('https://luthfimaulidyagithub1.github.io/DDA-json/latlong_wil.json').then((res) => res.json())
     ]).then(([geo, penduduk]) => {
-      const allTahun = [...new Set(penduduk.map((d) => d.tahun))].sort().reverse();
-      const latestTahun = allTahun[0];
-
-      setPendudukData(penduduk);
       setAllData(geo);
-      setListTahun(allTahun);
-      setSelectedTahun(latestTahun);
-
+      setAllPopulasiData(penduduk);
       const kecList = Array.from(new Set(geo.features.map((f) => f.properties.nmkec))).sort();
       setListKecamatan(kecList);
-
+      const uniqueYears = [...new Set(penduduk.map((d) => d.tahun))].sort().reverse();
+      setListYears(uniqueYears);
+      if (uniqueYears.length > 0) {
+        setSelectedYear(uniqueYears[0]);
+      }
       const sumberUnik = [...new Set(penduduk.flatMap((d) => d.sumber || []))];
       setSumberData(sumberUnik);
     });
@@ -85,48 +83,54 @@ export default function PetaPendudukDesaCard({ isLoading }) {
 
   // Filter data berdasarkan tahun dan kecamatan
   useEffect(() => {
-    if (!allData || !pendudukData) return;
+    if (!allData || !allPopulasiData || !selectedYear) return;
 
-    const filteredPenduduk = pendudukData.filter((d) => d.tahun === selectedTahun);
+    // Filter populasi data berdasarkan tahun
+    const filteredPopulasi = allPopulasiData.filter((d) => d.tahun === selectedYear);
 
     const desaMap = {};
-    filteredPenduduk.forEach((d) => {
+    filteredPopulasi.forEach((d) => {
       desaMap[d.iddesa] = {
         penduduk: +d.penduduk || 0,
         luas: +d['luas desa (km2)'] || 0,
         kepadatan: +d['kepadatan penduduk (per km2)'] || 0,
         rasiojk: +d['rasio jk'] || 0,
-        nmdesa: d.deskel,
-        nmkec: d.nmkec
+        nmdesa: d.deskel
       };
     });
 
-    const newGeoFeatures = allData.features.map((f) => {
-      const id = f.properties.iddesa;
-      const values = desaMap[id] || {
-        penduduk: 0,
-        luas: 0,
-        kepadatan: 0,
-        rasiojk: 0,
-        nmdesa: f.properties.nmdesa || 'Tidak ada nama'
-      };
-
-      return {
-        ...f,
-        properties: {
-          ...f.properties,
-          ...values
-        }
-      };
-    });
-
-    const filteredGeo = {
+    const newGeo = {
       ...allData,
-      features: selectedKec === 'all' ? newGeoFeatures : newGeoFeatures.filter((f) => f.properties.nmkec === selectedKec)
+      features: allData.features.map((f) => {
+        const id = f.properties.iddesa;
+        const values = desaMap[id] || {
+          penduduk: 0,
+          luas: 0,
+          kepadatan: 0,
+          rasiojk: 0,
+          nmdesa: f.properties.nmdesa || 'Tidak ada nama'
+        };
+
+        return {
+          ...f,
+          properties: {
+            ...f.properties,
+            ...values
+          }
+        };
+      })
     };
 
-    setData(filteredGeo);
-  }, [selectedKec, selectedTahun, allData, pendudukData]);
+    // Filter GeoJSON berdasarkan kecamatan
+    if (selectedKec === 'all') {
+      setData(newGeo);
+    } else {
+      setData({
+        ...newGeo,
+        features: newGeo.features.filter((f) => f.properties.nmkec === selectedKec)
+      });
+    }
+  }, [selectedYear, selectedKec, allData, allPopulasiData]);
 
   // Fit bounds otomatis
   useEffect(() => {
@@ -219,6 +223,21 @@ export default function PetaPendudukDesaCard({ isLoading }) {
     }
   };
 
+  // Menggabungkan logika hover dan klik
+  const handleMapInteraction = (e) => {
+    const feature = e.features && e.features[0];
+    if (feature) {
+      setHoverInfo({
+        longitude: e.lngLat.lng,
+        latitude: e.lngLat.lat,
+        nama: feature.properties.nmdesa,
+        value: feature.properties[selectedIndicator]
+      });
+    } else {
+      setHoverInfo(null);
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -231,11 +250,17 @@ export default function PetaPendudukDesaCard({ isLoading }) {
             </Typography>
             {/* Dropdown Filter Tahun */}
             <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>Tahun</InputLabel>
-              <Select value={selectedTahun} label="Tahun" onChange={(e) => setSelectedTahun(e.target.value)}>
-                {listTahun.map((tahun) => (
-                  <MenuItem key={tahun} value={tahun}>
-                    {tahun}
+              <InputLabel id="year-filter-label">Tahun</InputLabel>
+              <Select
+                labelId="year-filter-label"
+                id="year-filter"
+                value={selectedYear}
+                label="Tahun"
+                onChange={(e) => setSelectedYear(e.target.value)}
+              >
+                {listYears.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
                   </MenuItem>
                 ))}
               </Select>
@@ -273,19 +298,7 @@ export default function PetaPendudukDesaCard({ isLoading }) {
                 mapStyle={esriSatellite}
                 interactiveLayerIds={['desa-fill']}
                 onClick={handleClick}
-                onMouseMove={(e) => {
-                  const feature = e.features && e.features[0];
-                  setHoverInfo(
-                    feature
-                      ? {
-                          longitude: e.lngLat.lng,
-                          latitude: e.lngLat.lat,
-                          nama: feature.properties.nmdesa,
-                          value: feature.properties[selectedIndicator]
-                        }
-                      : null
-                  );
-                }}
+                onMouseMove={handleMapInteraction}
                 onMouseLeave={() => setHoverInfo(null)}
               >
                 <NavigationControl position="bottom-right" />
@@ -295,6 +308,7 @@ export default function PetaPendudukDesaCard({ isLoading }) {
                     <Layer {...outlineLayer} />
                   </Source>
                 )}
+                {/* Menampilkan Popup saat hover */}
                 {hoverInfo && (
                   <Popup
                     longitude={hoverInfo.longitude}
