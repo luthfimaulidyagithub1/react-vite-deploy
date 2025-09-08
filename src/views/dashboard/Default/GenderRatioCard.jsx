@@ -81,7 +81,7 @@ export default function GenderRatioLightCard({ isLoading }) {
         <Tooltip
           title={
             year
-              ? `Pada tahun ${year}, terdapat sekitar  ${ratio.toLocaleString('id-ID', {
+              ? `Pada tahun ${year}, terdapat sekitar ${ratio.toLocaleString('id-ID', {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 0
                 })} penduduk laki-laki untuk 100 perempuan di Kabupaten Sumba Barat`
@@ -89,6 +89,9 @@ export default function GenderRatioLightCard({ isLoading }) {
           }
           arrow
           placement="top"
+          // Tambahkan properti ini untuk mengaktifkan klik pada perangkat sentuh
+          enterTouchDelay={0}
+          leaveTouchDelay={5000} // Atur durasi tampil tooltip setelah klik
         >
           <CardWrapper border={false} content={false}>
             <Box sx={{ p: 2 }}>

@@ -41,7 +41,7 @@ export default function PetaPendudukDesaCard({ isLoading }) {
   const [selectedKec, setSelectedKec] = useState('all');
   const [listKecamatan, setListKecamatan] = useState([]);
   const [selectedFeature, setSelectedFeature] = useState(null);
-  const [showLegend, setShowLegend] = useState(false);
+  const [showLegend, setShowLegend] = useState(true);
   const [sumberData, setSumberData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(''); // State baru untuk tahun
   const [listYears, setListYears] = useState([]); // State baru untuk daftar tahun
@@ -238,6 +238,78 @@ export default function PetaPendudukDesaCard({ isLoading }) {
     }
   };
 
+  const getPopupText = (indicator, value) => {
+    switch (indicator) {
+      case 'kepadatan':
+        const kepadatanValue = value?.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        let kepadatanInterpretation = `Rata-rata terdapat ${kepadatanValue} penduduk di setiap 1 km² di desa ini.`;
+        return (
+          <>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              Kepadatan Penduduk: {kepadatanValue} jiwa/km²
+            </Typography>
+            <Typography variant="body2">Artinya: {kepadatanInterpretation}</Typography>
+          </>
+        );
+
+      case 'rasiojk':
+        const rasioValue = Math.round(value).toLocaleString('id-ID');
+        let rasioInterpretation = '';
+        if (value > 100) {
+          rasioInterpretation = `Jumlah penduduk laki-laki lebih banyak dari perempuan (sekitar ${Math.round(value - 100)}% lebih banyak)`;
+        } else if (value < 100) {
+          rasioInterpretation = `Jumlah penduduk perempuan lebih banyak dari laki-laki (sekitar ${Math.round(100 - value)}% lebih banyak)`;
+        } else {
+          rasioInterpretation = 'Jumlah penduduk laki-laki dan perempuan relatif seimbang';
+        }
+        return (
+          <>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              Rasio Jenis Kelamin: {rasioValue}
+            </Typography>
+            <Typography variant="body2">Artinya: {rasioInterpretation}</Typography>
+          </>
+        );
+
+      case 'luas':
+        const luasValue = value?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return (
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+            Luas wilayah desa: {luasValue} km²
+          </Typography>
+        );
+
+      case 'penduduk':
+        const pendudukValue = value?.toLocaleString('id-ID');
+        return (
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+            Jumlah penduduk: {pendudukValue} jiwa
+          </Typography>
+        );
+
+      default:
+        return <Typography variant="body2">Data tidak tersedia</Typography>;
+    }
+  };
+  // const getPopupText = (indicator, value) => {
+  //   switch (indicator) {
+  //     case 'kepadatan':
+  //       const kepadatanValue = value?.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  //       return `Rata-rata terdapat ${kepadatanValue} penduduk di setiap 1 km² di desa ini.`;
+  //     case 'rasiojk':
+  //       const rasioValue = Math.round(value).toLocaleString('id-ID');
+  //       return `Terdapat sekitar ${rasioValue} penduduk laki-laki untuk setiap 100 penduduk perempuan.`;
+  //     case 'luas':
+  //       const luasValue = value?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  //       return `Luas wilayah desa: ${luasValue} km²`;
+  //     case 'penduduk':
+  //       const pendudukValue = value?.toLocaleString('id-ID');
+  //       return `Jumlah penduduk: ${pendudukValue} jiwa`;
+  //     default:
+  //       return 'Data tidak tersedia';
+  //   }
+  // };
+
   return (
     <>
       {isLoading ? (
@@ -322,12 +394,8 @@ export default function PetaPendudukDesaCard({ isLoading }) {
                         {hoverInfo.nama}
                       </Typography>
                       <Typography variant="body2">
-                        {indikatorList.find((i) => i.key === selectedIndicator)?.label}:{' '}
-                        {selectedIndicator === 'luas' || selectedIndicator === 'kepadatan'
-                          ? hoverInfo.value?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                          : selectedIndicator === 'rasiojk'
-                            ? Math.round(hoverInfo.value).toLocaleString('id-ID')
-                            : hoverInfo.value?.toLocaleString('id-ID')}
+                        {/* Menampilkan interpretasi berdasarkan indikator */}
+                        {getPopupText(selectedIndicator, hoverInfo.value)}
                       </Typography>
                     </Paper>
                   </Popup>

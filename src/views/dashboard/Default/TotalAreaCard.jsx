@@ -71,6 +71,9 @@ export default function TotalAreaCard({ isLoading }) {
           title={`Total luas wilayah Kabupaten Sumba Barat adalah ${Math.ceil(totalArea).toLocaleString('id-ID')} km²`}
           arrow
           placement="top"
+          // Properti yang ditambahkan untuk mengaktifkan klik/sentuhan
+          enterTouchDelay={0}
+          leaveTouchDelay={5000}
         >
           <CardWrapper border={false} content={false}>
             <Box sx={{ p: 2 }}>
