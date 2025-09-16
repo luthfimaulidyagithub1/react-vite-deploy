@@ -26,7 +26,7 @@ export default function PiePengeluaranGolonganCard({ isLoading, data, tahun }) {
     }
 
     const result = filtered.map((item) => ({
-      name: item['golongan pengeluaran per orang sebulan (rupiah)'] || 'Tidak diketahui',
+      name: item['golongan pengeluaran per kapita sebulan (rupiah)'] || 'Tidak diketahui',
       value: Number(item['persentase penduduk']) || 0
     }));
 
