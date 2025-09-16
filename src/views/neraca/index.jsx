@@ -13,6 +13,7 @@ import StackedPDRBPengeluaranCard from './neraca-component/StackedPDRBPengeluara
 import LajuPDRBPengeluaranCard from './neraca-component/LajuPDRBPengeluaranCard';
 import LajuPDRBLapusCard from './neraca-component/LajuPDRBLapusCard';
 import PDRBPengeluaranLineCard from './neraca-component/PDRBPengeluaranLineCard';
+import StackedPDRBAdhkCard from './neraca-component/StackedPDRBAdhkCard';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -118,12 +119,24 @@ export default function Perdagangan() {
       }
     >
       <CardContent sx={{ pt: 0, pb: 0 }}>
-        <Grid container spacing={2}>
+        <Grid container spacing={0}>
           <Grid item xs={12} md={12} lg={12}>
             <StackedPDRBCard isLoading={isLoading} data={json121} />
           </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <StackedPDRBAdhkCard isLoading={isLoading} data={json122} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <LajuPDRBLapusCard isLoading={isLoading} data={json122} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <PDRBPengeluaranLineCard isLoading={isLoading} data={json125} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <LajuPDRBPengeluaranCard isLoading={isLoading} data={json126} />
+          </Grid>
         </Grid>
-        <Grid container spacing={2} mt={0.5}>
+        {/* <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={12} lg={12}>
             <LajuPDRBLapusCard isLoading={isLoading} data={json122} />
           </Grid>
@@ -137,7 +150,7 @@ export default function Perdagangan() {
           <Grid item xs={12} md={12} lg={12}>
             <LajuPDRBPengeluaranCard isLoading={isLoading} data={json126} />
           </Grid>
-        </Grid>
+        </Grid> */}
       </CardContent>
     </MainCard>
   );

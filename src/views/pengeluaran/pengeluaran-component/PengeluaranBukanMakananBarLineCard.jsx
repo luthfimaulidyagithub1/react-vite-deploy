@@ -68,7 +68,7 @@ export default function PengeluaranBukanBukanMakananBarLineCard({ data = [], isL
                 color: theme.palette.text.primary
               }}
             >
-              Rata-Rata Pengeluaran Per Kapita Sebulan (Rupiah) & Persentase untuk Kelompok Komoditas Bukan Makanan
+              Rata-Rata Pengeluaran Per Kapita (Per Orang) Sebulan (Rupiah) & Persentase untuk Kelompok Komoditas Bukan Makanan
             </Typography>
 
             {/* Chart */}
@@ -91,7 +91,7 @@ export default function PengeluaranBukanBukanMakananBarLineCard({ data = [], isL
                   />
                   <Tooltip
                     formatter={(value, name) =>
-                      name === 'Rata-rata pengeluaran per kapita sebulan' ? `Rp${formatRupiah(value)}` : `${value.toFixed(2)}%`
+                      name === 'Rata-rata pengeluaran per orang sebulan' ? `Rp${formatRupiah(value)}` : `${value.toFixed(2)}%`
                     }
                   />
                   <Legend />
@@ -100,7 +100,7 @@ export default function PengeluaranBukanBukanMakananBarLineCard({ data = [], isL
                   <Bar
                     yAxisId="left"
                     dataKey="rata"
-                    name="Rata-rata pengeluaran per kapita sebulan"
+                    name="Rata-rata pengeluaran per orang sebulan"
                     fill={theme.palette.success.dark}
                     barSize={40}
                     cursor="pointer"
@@ -155,12 +155,12 @@ export default function PengeluaranBukanBukanMakananBarLineCard({ data = [], isL
               <DialogContent dividers>
                 {selected?.tipe === 'rata' ? (
                   <Typography>
-                    Pada tahun <strong>{selected?.tahun}</strong>, <strong>rata-rata pengeluaran bukan makanan per kapita sebulan </strong>
+                    Pada tahun <strong>{selected?.tahun}</strong>, <strong>rata-rata pengeluaran bukan makanan per orang sebulan </strong>
                     tercatat sebesar <strong>Rp{formatRupiah(selected?.rata)}</strong>.
                   </Typography>
                 ) : selected?.tipe === 'persen' ? (
                   <Typography>
-                    Pada tahun <strong>{selected?.tahun}</strong>, <strong>pengeluaran bukan makanan per kapita sebulan</strong> menyumbang{' '}
+                    Pada tahun <strong>{selected?.tahun}</strong>, <strong>pengeluaran bukan makanan per orang sebulan</strong> menyumbang{' '}
                     <strong>{selected?.persen?.toFixed(2)}%</strong> dari total pengeluaran.
                   </Typography>
                 ) : null}

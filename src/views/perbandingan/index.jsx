@@ -10,6 +10,7 @@ import { gridSpacing } from 'store/constant';
 import PendudukMiskinKabkotCard from './perbandingan-component/PendudukMiskinKabkotCard';
 import LajuADHKKabkotCard from './perbandingan-component/LajuADHKKabkotCard';
 import IPMKabkotCard from './perbandingan-component/IPMKabKotaCard';
+import IPMCard from './perbandingan-component/IPMCard';
 
 // icons
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -95,19 +96,15 @@ export default function Perdagangan() {
       }
     >
       <CardContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={0}>
           <Grid item xs={12} md={12} lg={12}>
             <LajuADHKKabkotCard isLoading={isLoading} data={json132} />
           </Grid>
-        </Grid>
-        <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12}>
             <PendudukMiskinKabkotCard isLoading={isLoading} data={json133} />
           </Grid>
-        </Grid>
-        <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12}>
-            <IPMKabkotCard isLoading={isLoading} data={json134} />
+            <IPMCard isLoading={isLoading} data={json134} />
           </Grid>
         </Grid>
       </CardContent>

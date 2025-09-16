@@ -51,7 +51,7 @@ const colors = [
   '#7b4173' // ungu tua
 ];
 
-export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
+export default function IPMCard({ isLoading, data }) {
   const [chartData, setChartData] = useState([]);
   const [idList, setIdList] = useState([]);
   const [kabkotMap, setKabkotMap] = useState({});
@@ -147,7 +147,7 @@ export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
     filteredData.forEach((item) => {
       const th = item.tahun || 'Tidak Diketahui';
       const id = String(item.id).trim();
-      const val = toNumber(item['penduduk miskin']);
+      const val = toNumber(item['IPM']); // Mengubah dari 'penduduk miskin' menjadi 'IPM'
       if (!grouped[th]) {
         grouped[th] = { tahun: th };
       }
@@ -177,14 +177,7 @@ export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
 
       return (
         <Paper elevation={3} sx={{ p: 1.5, position: 'relative' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 1
-            }}
-          >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
             <Typography variant="body2" component="div">
               <strong>{label}</strong>
             </Typography>
@@ -219,7 +212,7 @@ export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                   })}
-                  {' ribu jiwa'}
+                  {' poin'} {/* Mengubah satuan menjadi 'poin' */}
                 </Typography>
               </li>
             ))}
@@ -353,8 +346,8 @@ export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
   return (
     <Card sx={{ borderRadius: 2, height: '100%' }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 4, textAlign: 'center', color: theme.palette.error.dark }}>
-          Jumlah Penduduk Miskin (Ribu Jiwa) Menurut Kabupaten/Kota Di Provinsi Nusa Tenggara Timur
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 4, textAlign: 'center', color: theme.palette.secondary.dark }}>
+          Indeks Pembangunan Manusia (IPM) Menurut Kabupaten/Kota Di Provinsi Nusa Tenggara Timur
         </Typography>
 
         <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2 }}>
@@ -408,7 +401,10 @@ export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
                     <LineChart data={filteredChartData} onClick={handleChartClick} margin={{ top: 20, right: 20, left: 10, bottom: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="tahun" />
-                      <YAxis tickFormatter={(val) => `${val.toLocaleString('id-ID', { maximumFractionDigits: 2 })} ribu`} />
+                      <YAxis
+                        tickFormatter={(val) => `${val.toLocaleString('id-ID', { maximumFractionDigits: 2 })}`}
+                        domain={['dataMin - 1', 'dataMax + 1']}
+                      />
                       <Tooltip content={<CustomTooltip />} trigger="none" />
                       {selectedId.map((id) => (
                         <Line
@@ -432,7 +428,10 @@ export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="tahun" />
-                      <YAxis tickFormatter={(val) => `${val.toLocaleString('id-ID', { maximumFractionDigits: 2 })} ribu`} />
+                      <YAxis
+                        tickFormatter={(val) => `${val.toLocaleString('id-ID', { maximumFractionDigits: 2 })}`}
+                        domain={['dataMin - 1', 'dataMax + 1']}
+                      />
                       <Tooltip content={<CustomTooltip />} trigger="none" />
                       {selectedId.map((id) => (
                         <Bar key={id} dataKey={id} fill={colorMap[id]} name={kabkotMap[id]} />
@@ -476,7 +475,7 @@ export default function PendudukMiskinKabkotaCard({ isLoading, data }) {
   );
 }
 
-PendudukMiskinKabkotaCard.propTypes = {
+IPMCard.propTypes = {
   isLoading: PropTypes.bool,
   data: PropTypes.array
 };

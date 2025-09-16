@@ -122,7 +122,7 @@ export default function StackedPengeluaranCard({ isLoading, data }) {
       >
         <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>
-            Persentase Rata-Rata Pengeluaran Per Kapita Sebulan menurut Kelompok Komoditas di Kabupaten Sumba Barat
+            Persentase Rata-Rata Pengeluaran Per Kapita (Per Orang) Sebulan menurut Kelompok Komoditas di Kabupaten Sumba Barat
           </Typography>
 
           <Box sx={{ flex: 1, minHeight: 300 }}>
@@ -174,7 +174,7 @@ export default function StackedPengeluaranCard({ isLoading, data }) {
         <DialogContent dividers>
           {modalContent && (
             <Typography variant="body1">
-              Pada tahun <strong>{modalContent.tahun}</strong>,<strong> rata-rata pengeluaran per kapita sebulan </strong> untuk kelompok
+              Pada tahun <strong>{modalContent.tahun}</strong>,<strong> rata-rata pengeluaran per orang sebulan </strong> untuk kelompok
               komoditas <strong>{modalContent.kategori}</strong> di Kabupaten Sumba Barat sebesar{' '}
               <strong>Rp{modalContent.asli.toLocaleString('id-ID')}</strong>, menyumbang <strong>{modalContent.persen}%</strong> dari total
               pengeluaran.

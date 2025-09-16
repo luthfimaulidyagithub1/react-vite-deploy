@@ -1,4 +1,3 @@
-// LajuADHKKabkotCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -10,44 +9,78 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  OutlinedInput,
+  Paper,
   Checkbox,
   ListItemText,
-  Paper
+  List,
+  ListItem,
+  ListItemIcon,
+  IconButton
 } from '@mui/material';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import CloseIcon from '@mui/icons-material/Close';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { ResponsiveHeatMap } from '@nivo/heatmap';
+
+// Konstanta warna untuk chart Bar/Line
+const colors = [
+  '#1f77b4', // biru
+  '#ff7f0e', // oranye
+  '#2ca02c', // hijau
+  '#d62728', // merah
+  '#9467bd', // ungu
+  '#8c564b', // coklat
+  '#e377c2', // merah muda
+  '#7f7f7f', // abu-abu
+  '#bcbd22', // zaitun
+  '#17becf', // biru muda
+  '#aec7e8', // biru pastel
+  '#ffbb78', // oranye pastel
+  '#98df8a', // hijau pastel
+  '#ff9896', // merah pastel
+  '#c5b0d5', // ungu pastel
+  '#c49c94', // coklat pastel
+  '#f7b6d2', // merah muda pastel
+  '#c7c7c7', // abu-abu muda
+  '#dbdb8d', // zaitun pastel
+  '#9edae5', // biru muda pastel
+  '#393b79', // biru tua
+  '#637939', // hijau tua
+  '#8c6d31', // coklat tua
+  '#843c39', // merah tua
+  '#7b4173' // ungu tua
+];
 
 export default function LajuADHKKabkotCard({ isLoading, data }) {
   const [chartData, setChartData] = useState([]);
   const [idList, setIdList] = useState([]);
-  const [idMap, setIdMap] = useState({});
+  const [kabkotMap, setKabkotMap] = useState({});
+  const [colorMap, setColorMap] = useState({});
   const [sumber, setSumber] = useState('');
-  const [selectedId, setSelectedId] = useState([]);
+  const [catatanByTahun, setCatatanByTahun] = useState({});
   const [chartType, setChartType] = useState('line');
-
+  const [selectedId, setSelectedId] = useState([]);
   const [tahunAwal, setTahunAwal] = useState('');
   const [tahunAkhir, setTahunAkhir] = useState('');
   const [tahunList, setTahunList] = useState([]);
+  const [activeTooltip, setActiveTooltip] = useState(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const chartHeight = isMobile ? 280 : isTablet ? 400 : 500;
+  const chartHeight = 500;
 
   useEffect(() => {
     if (!data || data.length === 0) {
       setChartData([]);
       setIdList([]);
-      setIdMap({});
+      setKabkotMap({});
+      setColorMap({});
       setSumber('');
+      setCatatanByTahun({});
+      setTahunList([]);
       return;
     }
-
-    // 🔹 Filter supaya "Nusa Tenggara Timur" tidak ikut masuk
-    const filteredData = data.filter((item) => String(item.kabkot).trim() !== 'Nusa Tenggara Timur');
 
     const toNumber = (val) => {
       if (!val) return 0;
@@ -59,271 +92,302 @@ export default function LajuADHKKabkotCard({ isLoading, data }) {
     };
 
     const idSet = new Set();
+    const kabkotSet = new Set();
+    const tahunSet = new Set();
     const map = {};
+    const catatanMap = {};
+
+    // Filter data untuk mengecualikan Nusa Tenggara Timur
+    const filteredData = data.filter((item) => {
+      const kabkot = String(item.kabkot || '')
+        .trim()
+        .toLowerCase();
+      const id = String(item.id || '')
+        .trim()
+        .toLowerCase();
+      return kabkot !== 'nusa tenggara timur' && id !== 'ntt';
+    });
+
     filteredData.forEach((item) => {
-      if (item.id && item.kabkot) {
-        const id = String(item.id).trim();
-        const kabkot = String(item.kabkot).trim();
-        idSet.add(id);
-        map[id] = kabkot;
+      const id = String(item.id).trim();
+      const kabkot = String(item.kabkot).trim();
+      const tahun = String(item.tahun).trim();
+
+      idSet.add(id);
+      kabkotSet.add(kabkot);
+      tahunSet.add(tahun);
+      map[id] = kabkot;
+
+      if (tahun && item.catatan && item.catatan.trim() !== '-') {
+        catatanMap[tahun] = item.catatan;
       }
     });
-    const idArr = Array.from(idSet);
-    setIdList(idArr);
-    setIdMap(map);
-    if (selectedId.length === 0) setSelectedId(idArr);
 
-    // Group data by tahun
+    const idArr = Array.from(idSet);
+    const kabkotArr = Array.from(kabkotSet);
+    const tahunArr = Array.from(tahunSet).sort();
+
+    const newColorMap = {};
+    idArr.forEach((id, index) => {
+      newColorMap[id] = colors[index % colors.length];
+    });
+
+    setIdList(idArr);
+    setKabkotMap(map);
+    setColorMap(newColorMap);
+    setTahunList(tahunArr);
+
+    if (tahunArr.length > 0) {
+      if (!tahunAwal) setTahunAwal(tahunArr[0]);
+      if (!tahunAkhir) setTahunAkhir(tahunArr[tahunArr.length - 1]);
+    }
+
+    // Prepare data for Line/Bar Chart
     const grouped = {};
     filteredData.forEach((item) => {
       const th = item.tahun || 'Tidak Diketahui';
       const id = String(item.id).trim();
       const val = toNumber(item['Laju ADHK 2010']);
-
       if (!grouped[th]) {
         grouped[th] = { tahun: th };
-        idArr.forEach((k) => {
-          grouped[th][k] = 0;
-        });
       }
       grouped[th][id] = val;
     });
-
-    const result = Object.values(grouped);
-    setChartData(result);
-
-    const tahunArr = result.map((d) => d.tahun).sort();
-    setTahunList(tahunArr);
-    if (!tahunAwal && tahunArr.length > 0) setTahunAwal(tahunArr[0]);
-    if (!tahunAkhir && tahunArr.length > 0) setTahunAkhir(tahunArr[tahunArr.length - 1]);
+    setChartData(Object.values(grouped));
+    setCatatanByTahun(catatanMap);
 
     if (filteredData.length > 0 && filteredData[0].sumber) {
       setSumber(filteredData[0].sumber);
     }
-  }, [data]);
+    if (selectedId.length === 0 && idArr.length > 0) {
+      setSelectedId(idArr);
+    }
+  }, [data, tahunAwal, tahunAkhir]);
 
   const filteredChartData = chartData.filter((d) => (!tahunAwal || d.tahun >= tahunAwal) && (!tahunAkhir || d.tahun <= tahunAkhir));
 
-  const colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
+  const filteredCatatan = Object.entries(catatanByTahun).filter(
+    ([tahun]) => (!tahunAwal || tahun >= tahunAwal) && (!tahunAkhir || tahun <= tahunAkhir)
+  );
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  // Custom Tooltip for Recharts
+  const CustomTooltip = ({ active, payload, label, onClose }) => {
     if (active && payload && payload.length) {
+      const sortedPayload = payload.filter((entry) => (entry.value ?? 0) !== 0).sort((a, b) => b.value - a.value);
+
       return (
-        <div style={{ background: 'white', border: '1px solid #ccc', padding: 8 }}>
-          <strong>{label}</strong>
+        <Paper elevation={3} sx={{ p: 1.5, position: 'relative' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 1
+            }}
+          >
+            <Typography variant="body2" component="div">
+              <strong>{label}</strong>
+            </Typography>
+            {onClose && (
+              <IconButton size="small" onClick={onClose} sx={{ ml: 1 }} aria-label="close">
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
           <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-            {payload.map((entry, idx) => (
-              <li key={idx} style={{ color: entry.color }}>
-                {entry.name}:{' '}
-                {entry.value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('.', ',')} %
+            {sortedPayload.map((entry) => (
+              <li
+                key={entry.name}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  margin: '4px 0'
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    bgcolor: entry.color,
+                    borderRadius: '50%',
+                    mr: 1.5
+                  }}
+                />
+                <Typography variant="caption">
+                  {kabkotMap[entry.name] || entry.name}:{' '}
+                  {(entry.value ?? 0).toLocaleString('id-ID', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })}
+                  %
+                </Typography>
               </li>
             ))}
           </ul>
-        </div>
+        </Paper>
       );
     }
     return null;
   };
 
-  const CustomLegend = () => (
-    <Paper
-      elevation={1}
-      sx={{
-        p: 0,
-        mt: isMobile ? 2 : 0,
-        mb: isMobile ? 2 : 0,
-        flex: isMobile ? '0 0 auto' : '0 0 220px',
-        maxHeight: chartHeight - 30,
-        overflowY: 'auto',
-        borderRadius: 2
-      }}
-    >
-      <Box
-        sx={{
-          position: 'sticky',
-          top: 0,
-          bgcolor: 'background.paper',
-          zIndex: 2,
-          p: 1,
-          borderBottom: '1px solid',
-          borderColor: 'divider'
-        }}
-      >
-        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-          Kabupaten/Kota
-        </Typography>
-      </Box>
-      <Box sx={{ pb: 2, pt: 1, pl: 2, pr: 2 }}>
-        {selectedId.map((id, idx) => {
-          const color = colors[idx % colors.length];
-          const kabkot = idMap[id] || id;
-          return (
-            <Box key={id} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Box sx={{ minWidth: 14, height: 14, bgcolor: color, borderRadius: 0.5, mr: 1 }} />
-              <Typography variant="caption">
-                {id} ({kabkot})
-              </Typography>
-            </Box>
-          );
-        })}
-      </Box>
-    </Paper>
-  );
-
-  // 🔥 Heatmap Chart (pakai @nivo/heatmap)
-  const HeatmapChart = ({ data, idList, idMap }) => {
-    // ambil tahun sesuai data yang sudah difilter
-    const tahunListFiltered = data.map((d) => d.tahun);
-
-    const heatmapData = idList.map((id) => ({
-      id,
-      data: tahunListFiltered.map((tahun) => ({
-        x: tahun,
-        y: data.find((d) => d.tahun === tahun)?.[id] ?? 0
-      }))
-    }));
+  const RenderClickedTooltip = () => {
+    if (!activeTooltip) return null;
+    const tahun = activeTooltip.tahun;
+    const payload = Object.keys(activeTooltip)
+      .filter((key) => selectedId.includes(key) && key !== 'tahun')
+      .map((key) => ({
+        name: key,
+        color: colorMap[key],
+        value: activeTooltip[key]
+      }));
 
     return (
-      <ResponsiveHeatMap
-        data={heatmapData}
-        margin={{ top: 30, right: 60, bottom: 100, left: 100 }}
-        valueFormat={(v) =>
-          `${v
-            .toLocaleString('id-ID', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-            .replace('.', ',')} %`
-        }
-        axisTop={{ tickRotation: -45 }}
-        axisLeft={{
-          legend: 'Kabupaten/Kota',
-          legendPosition: 'middle',
-          legendOffset: -80
+      <Box sx={{ mt: 2 }}>
+        <CustomTooltip active={true} payload={payload} label={tahun} onClose={() => setActiveTooltip(null)} />
+      </Box>
+    );
+  };
+
+  const handleChartClick = (e) => {
+    if (e && e.activePayload && e.activePayload[0]) {
+      const clickedData = e.activePayload[0].payload;
+      if (activeTooltip && activeTooltip.tahun === clickedData.tahun) {
+        setActiveTooltip(null);
+      } else {
+        setActiveTooltip(clickedData);
+      }
+    }
+  };
+
+  const CustomLegend = () => {
+    const handleCheckAll = () => {
+      setSelectedId(selectedId.length === idList.length ? [] : idList);
+    };
+
+    const handleCheckItem = (id) => {
+      setSelectedId(selectedId.includes(id) ? selectedId.filter((x) => x !== id) : [...selectedId, id]);
+    };
+
+    return (
+      <Paper
+        elevation={0}
+        sx={{
+          flex: isMobile ? '0 0 auto' : '0 0 240px',
+          maxHeight: chartHeight - 30,
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 2,
+          border: '1px solid',
+          borderColor: 'divider',
+          overflow: 'hidden',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
         }}
-        colors={{ type: 'sequential', scheme: 'red_yellow_blue' }}
-        emptyColor="#f0f0f0"
-        legends={[
-          {
-            anchor: 'bottom',
-            translateY: 50,
-            length: 300,
-            thickness: 10,
-            direction: 'row',
-            tickPosition: 'after',
-            tickSize: 5,
-            tickSpacing: 4,
-            title: 'Persentase',
-            titleAlign: 'start',
-            titleOffset: 4
-          }
-        ]}
-      />
+      >
+        <Typography
+          variant="subtitle2"
+          sx={{
+            p: 1,
+            fontWeight: 600,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'grey.50'
+          }}
+        >
+          Kabupaten/Kota
+        </Typography>
+
+        <List
+          dense
+          sx={{
+            p: 0,
+            flex: 1,
+            overflowY: 'auto',
+            '& .MuiListItem-root': {
+              py: 0.3,
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              transition: 'background-color 0.2s ease',
+              '&:last-of-type': { borderBottom: 'none' },
+              '&:hover': { bgcolor: 'action.hover' }
+            }
+          }}
+        >
+          <ListItem onClick={handleCheckAll} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon sx={{ minWidth: 26 }}>
+              <Checkbox
+                size="small"
+                indeterminate={selectedId.length > 0 && selectedId.length < idList.length}
+                checked={idList.length > 0 && selectedId.length === idList.length}
+              />
+            </ListItemIcon>
+            <ListItemText
+              primary={selectedId.length === idList.length ? 'Semua Kab/Kota' : 'Pilih Semua'}
+              primaryTypographyProps={{ variant: 'caption' }}
+            />
+          </ListItem>
+          {idList.map((id) => (
+            <ListItem key={id} onClick={() => handleCheckItem(id)} sx={{ cursor: 'pointer' }}>
+              <ListItemIcon sx={{ minWidth: 26 }}>
+                <Checkbox
+                  size="small"
+                  checked={selectedId.includes(id)}
+                  sx={{
+                    color: colorMap[id],
+                    '&.Mui-checked': { color: colorMap[id] }
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={kabkotMap[id] || id}
+                secondary={`ID: ${id}`}
+                primaryTypographyProps={{ variant: 'body2' }}
+                secondaryTypographyProps={{ variant: 'caption' }}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
     );
   };
 
   return (
     <Card sx={{ borderRadius: 2, height: '100%' }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, textAlign: 'center' }}>
-          Laju Pertumbuhan Produk Domestik Regional Bruto Atas Dasar Harga Konstan 2010 Menurut Kabupaten/Kota di Provinsi Nusa Tenggara
-          Timur (persen)
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 4, textAlign: 'center', color: theme.palette.primary.dark }}>
+          Laju Pertumbuhan Produk Domestik Regional Bruto (PDRB) Atas Dasar Harga Konstan (ADHK) 2010 Menurut Kabupaten/Kota di Provinsi
+          Nusa Tenggara Timur
         </Typography>
 
-        {/* Dropdowns */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            gap: 2,
-            mb: 2,
-            flexWrap: 'wrap'
-          }}
-        >
-          {/* Pilih kab/kot */}
-          <FormControl size="small" sx={{ minWidth: isMobile ? '100%' : '100%' }}>
-            <InputLabel id="id-select-label">Pilih Kabupaten/Kota</InputLabel>
-            <Select
-              labelId="id-select-label"
-              multiple
-              value={selectedId}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value.includes('ALL')) {
-                  if (selectedId.length === idList.length) {
-                    setSelectedId([]);
-                  } else {
-                    setSelectedId(idList);
-                  }
-                } else {
-                  setSelectedId(value);
-                }
-              }}
-              input={<OutlinedInput label="Pilih Kabupaten/Kota" />}
-              renderValue={(selected) => selected.join(', ')}
-              MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
-            >
-              <MenuItem
-                value="ALL"
-                disableRipple
-                sx={{
-                  bgcolor: selectedId.length === idList.length ? 'error.light' : 'success.light',
-                  borderRadius: 1,
-                  '&:hover': { bgcolor: selectedId.length === idList.length ? 'error.light' : 'success.light' }
-                }}
-              >
-                <Checkbox
-                  indeterminate={selectedId.length > 0 && selectedId.length < idList.length}
-                  checked={idList.length > 0 && selectedId.length === idList.length}
-                />
-                <ListItemText primary={selectedId.length === idList.length ? 'Hapus Semua' : 'Pilih Semua'} />
-              </MenuItem>
-              {idList.map((id) => (
-                <MenuItem key={id} value={id}>
-                  <Checkbox checked={selectedId.indexOf(id) > -1} />
-                  <ListItemText primary={`${id} (${idMap[id] || id})`} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {/* Dropdown jenis grafik */}
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel id="chart-type-label">Jenis Grafik</InputLabel>
-            <Select labelId="chart-type-label" value={chartType} label="Jenis Grafik" onChange={(e) => setChartType(e.target.value)}>
+        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 160, flex: 1 }}>
+            <InputLabel>Jenis Grafik</InputLabel>
+            <Select value={chartType} label="Jenis Grafik" onChange={(e) => setChartType(e.target.value)}>
               <MenuItem value="line">Line Chart</MenuItem>
               <MenuItem value="bar">Bar Chart</MenuItem>
-              <MenuItem value="heatmap">Heatmap</MenuItem>
             </Select>
           </FormControl>
-
-          {/* Tahun Awal */}
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel id="tahun-awal-label">Tahun Awal</InputLabel>
+          <FormControl size="small" sx={{ minWidth: 120, flex: 1 }}>
+            <InputLabel>Tahun Awal</InputLabel>
             <Select
-              labelId="tahun-awal-label"
               value={tahunAwal}
               label="Tahun Awal"
               onChange={(e) => {
-                const newTahunAwal = e.target.value;
-                setTahunAwal(newTahunAwal);
-                if (tahunAkhir && tahunAkhir <= newTahunAwal) {
-                  setTahunAkhir('');
-                }
+                setTahunAwal(e.target.value);
+                if (tahunAkhir && tahunAkhir <= e.target.value) setTahunAkhir('');
               }}
             >
-              {tahunList.map((th) => (
-                <MenuItem key={th} value={th}>
-                  {th}
-                </MenuItem>
-              ))}
+              {tahunList
+                .filter((th) => !tahunAkhir || th < tahunAkhir)
+                .map((th) => (
+                  <MenuItem key={th} value={th}>
+                    {th}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
-
-          {/* Tahun Akhir */}
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel id="tahun-akhir-label">Tahun Akhir</InputLabel>
-            <Select labelId="tahun-akhir-label" value={tahunAkhir} label="Tahun Akhir" onChange={(e) => setTahunAkhir(e.target.value)}>
+          <FormControl size="small" sx={{ minWidth: 120, flex: 1 }}>
+            <InputLabel>Tahun Akhir</InputLabel>
+            <Select value={tahunAkhir} label="Tahun Akhir" onChange={(e) => setTahunAkhir(e.target.value)}>
               {tahunList
                 .filter((th) => th > tahunAwal)
                 .map((th) => (
@@ -335,82 +399,44 @@ export default function LajuADHKKabkotCard({ isLoading, data }) {
           </FormControl>
         </Box>
 
-        {/* Chart + Legend */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            flex: 1,
-            minHeight: chartHeight
-          }}
-        >
-          {chartType !== 'heatmap' && <CustomLegend />}
-          <Box sx={{ flex: 1, minHeight: chartHeight }}>
+        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flex: 1, minHeight: chartHeight }}>
+          <CustomLegend />
+          <Box sx={{ flex: 1, ml: isMobile ? 0 : 2, mt: isMobile ? 2 : 0 }}>
             {filteredChartData.length > 0 ? (
-              chartType === 'line' || chartType === 'bar' ? (
+              <>
                 <ResponsiveContainer width="100%" height={chartHeight}>
                   {chartType === 'line' ? (
-                    <LineChart data={filteredChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                    <LineChart data={filteredChartData} onClick={handleChartClick}>
+                      <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="tahun" />
-                      <YAxis
-                        tickFormatter={(val) =>
-                          val
-                            .toLocaleString('id-ID', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2
-                            })
-                            .replace('.', ',')
-                        }
-                        width={isMobile ? 50 : 70}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      {selectedId.map((id, idx) => (
+                      <YAxis tickFormatter={(val) => `${val.toLocaleString('id-ID', { maximumFractionDigits: 2 })}%`} />
+                      <Tooltip content={<CustomTooltip />} trigger="none" />
+                      {selectedId.map((id) => (
                         <Line
                           key={id}
                           type="monotone"
                           dataKey={id}
-                          stroke={colors[idx % colors.length]}
-                          name={id}
-                          dot={{
-                            r: 3,
-                            fill: colors[idx % colors.length],
-                            stroke: colors[idx % colors.length]
-                          }}
-                          activeDot={{
-                            r: 5,
-                            fill: colors[idx % colors.length],
-                            stroke: colors[idx % colors.length]
-                          }}
+                          stroke={colorMap[id]}
+                          dot={{ r: 3 }}
+                          activeDot={{ r: 4 }}
+                          name={kabkotMap[id]}
                         />
                       ))}
                     </LineChart>
                   ) : (
-                    <BarChart data={filteredChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                    <BarChart data={filteredChartData} onClick={handleChartClick} barCategoryGap="0%" barGap={0}>
+                      <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="tahun" />
-                      <YAxis
-                        tickFormatter={(val) =>
-                          val
-                            .toLocaleString('id-ID', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2
-                            })
-                            .replace('.', ',')
-                        }
-                        width={isMobile ? 50 : 70}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      {selectedId.map((id, idx) => (
-                        <Bar key={id} dataKey={id} fill={colors[idx % colors.length]} name={id} barSize={isMobile ? 20 : 40} />
+                      <YAxis tickFormatter={(val) => `${val.toLocaleString('id-ID', { maximumFractionDigits: 2 })}%`} />
+                      <Tooltip content={<CustomTooltip />} trigger="none" />
+                      {selectedId.map((id) => (
+                        <Bar key={id} dataKey={id} fill={colorMap[id]} name={kabkotMap[id]} />
                       ))}
                     </BarChart>
                   )}
                 </ResponsiveContainer>
-              ) : (
-                // 🔥 khusus heatmap tidak pakai ResponsiveContainer
-                <Box sx={{ width: '100%', height: chartHeight }}>
-                  <HeatmapChart data={filteredChartData} idList={idList} idMap={idMap} />
-                </Box>
-              )
+                <RenderClickedTooltip />
+              </>
             ) : (
               <Typography variant="body2" color="text.secondary">
                 Belum ada data
@@ -420,8 +446,24 @@ export default function LajuADHKKabkotCard({ isLoading, data }) {
         </Box>
 
         {sumber && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'left', fontStyle: 'italic' }}>
+          <Typography variant="caption" sx={{ mt: 1, fontStyle: 'italic' }}>
             Sumber: {sumber}
+          </Typography>
+        )}
+        {filteredCatatan.length > 0 ? (
+          <>
+            <Typography variant="caption" sx={{ mt: 0.5, fontStyle: 'italic' }}>
+              Catatan:
+            </Typography>
+            {filteredCatatan.map(([tahun, cttn]) => (
+              <Typography key={tahun} variant="caption">
+                {tahun} {cttn}
+              </Typography>
+            ))}
+          </>
+        ) : (
+          <Typography variant="caption" sx={{ mt: 0.5, fontStyle: 'italic' }}>
+            Catatan: -
           </Typography>
         )}
       </CardContent>

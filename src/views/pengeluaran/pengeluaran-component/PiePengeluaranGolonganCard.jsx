@@ -26,7 +26,7 @@ export default function PiePengeluaranGolonganCard({ isLoading, data, tahun }) {
     }
 
     const result = filtered.map((item) => ({
-      name: item['golongan pengeluaran per kapita sebulan (rupiah)'] || 'Tidak diketahui',
+      name: item['golongan pengeluaran per orang sebulan (rupiah)'] || 'Tidak diketahui',
       value: Number(item['persentase penduduk']) || 0
     }));
 
@@ -103,7 +103,7 @@ export default function PiePengeluaranGolonganCard({ isLoading, data, tahun }) {
             textAlign: 'center'
           }}
         >
-          Persentase Penduduk menurut Golongan Pengeluaran Per Kapita Sebulan (Rupiah) di Kabupaten Sumba Barat, {tahun}
+          Persentase Penduduk menurut Golongan Pengeluaran Per Kapita (Per Orang) Sebulan (Rupiah) di Kabupaten Sumba Barat, {tahun}
         </Typography>
 
         <Grid container spacing={2} sx={{ flex: 1 }}>

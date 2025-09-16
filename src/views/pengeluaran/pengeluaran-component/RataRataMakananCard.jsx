@@ -119,7 +119,7 @@ export default function RataRataMakananCard({ isLoading, data, tahun }) {
                   secondary={
                     <>
                       <Typography variant="subtitle2" sx={{ color: '#000', mt: 0.25 }}>
-                        Rata-rata Pengeluaran Makanan Per Kapita Sebulan, {tahun}
+                        Rata-rata Pengeluaran Makanan Per Kapita (Per Orang) Sebulan, {tahun}
                       </Typography>
                       <Typography variant="body2" sx={{ color: theme.palette.info.dark, fontWeight: 'bold' }}>
                         {persenMakanan.toFixed(2)}% dari total pengeluaran

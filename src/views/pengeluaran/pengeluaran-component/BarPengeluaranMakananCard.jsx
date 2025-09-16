@@ -79,7 +79,7 @@ export default function BarPengeluaranMakananCard({ isLoading, data, tahun }) {
             textAlign: 'center'
           }}
         >
-          Rata-Rata Pengeluaran Per Kapita Sebulan untuk Kelompok Komoditas Makanan di Kabupaten Sumba Barat, {tahun}
+          Rata-Rata Pengeluaran Per Kapita (Per Orang) Sebulan untuk Kelompok Komoditas Makanan di Kabupaten Sumba Barat, {tahun}
         </Typography>
 
         {chartData.length > 0 ? (

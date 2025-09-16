@@ -79,7 +79,7 @@ export default function BarPengeluaranBukanMakananCard({ isLoading, data, tahun 
             textAlign: 'center'
           }}
         >
-          Rata-rata Pengeluaran Per Kapita Sebulan untuk Kelompok Komoditas Bukan Makanan di Kabupaten Sumba Barat, {tahun}
+          Rata-rata Pengeluaran Per Kapita (Per Orang) Sebulan untuk Kelompok Komoditas Bukan Makanan di Kabupaten Sumba Barat, {tahun}
         </Typography>
 
         {chartData.length > 0 ? (

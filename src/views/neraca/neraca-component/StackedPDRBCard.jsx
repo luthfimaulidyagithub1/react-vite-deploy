@@ -9,37 +9,95 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  OutlinedInput,
+  Paper,
   Checkbox,
   ListItemText,
-  Paper
+  List,
+  ListItem,
+  ListItemIcon
 } from '@mui/material';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+
+// Konstanta warna
+const colors = [
+  '#1f77b4',
+  '#ff7f0e',
+  '#2ca02c',
+  '#d62728',
+  '#8400ffff',
+  '#791400ff',
+  '#ff00b3ff',
+  '#6e6e6eff',
+  '#f2f200ff',
+  '#004c54ff',
+  '#6d6fafff',
+  '#61fe69ff',
+  '#bc810dff',
+  '#f09592ff',
+  '#5a174eff',
+  '#00223bff',
+  '#bd275bff'
+];
+
+// Label total di atas bar (responsif)
+const TotalBarLabel = ({ x, y, value, width }) => {
+  if (!value || value === 0) return null;
+
+  const text = `Rp${value.toLocaleString('id-ID', { maximumFractionDigits: 2 })} M`;
+
+  // Hitung panjang teks kira-kira (7px per karakter)
+  const estimatedWidth = text.length * 7;
+  const maxWidth = width || 80; // fallback jika width tidak ada
+
+  // Jika terlalu panjang untuk muat, kecilkan font
+  const fontSize = estimatedWidth > maxWidth ? 10 : 14;
+
+  return (
+    <text
+      x={x}
+      y={y}
+      dy={-6}
+      fill="#000000ff"
+      textAnchor="middle"
+      fontSize={fontSize}
+      fontWeight="600"
+      style={{
+        pointerEvents: 'none',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {text}
+    </text>
+  );
+};
 
 export default function StackedPDRBCard({ isLoading, data }) {
   const [chartData, setChartData] = useState([]);
   const [kategoriList, setKategoriList] = useState([]);
   const [kategoriMap, setKategoriMap] = useState({});
+  const [colorMap, setColorMap] = useState({});
   const [sumber, setSumber] = useState('');
   const [catatanByTahun, setCatatanByTahun] = useState({});
-  const [chartType, setChartType] = useState('area');
+  const [chartType, setChartType] = useState('stacked_bar_100');
   const [selectedKategori, setSelectedKategori] = useState([]);
   const [tahunAwal, setTahunAwal] = useState('');
   const [tahunAkhir, setTahunAkhir] = useState('');
   const [tahunList, setTahunList] = useState([]);
+  const [activeTooltip, setActiveTooltip] = useState(null); // state untuk tooltip klik
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const chartHeight = isMobile ? 280 : isTablet ? 400 : 500;
+  const chartHeight = 400;
 
   useEffect(() => {
     if (!data || data.length === 0) {
       setChartData([]);
       setKategoriList([]);
       setKategoriMap({});
+      setColorMap({});
       setSumber('');
       setCatatanByTahun({});
       return;
@@ -71,8 +129,14 @@ export default function StackedPDRBCard({ isLoading, data }) {
     });
 
     const kategoriArr = Array.from(kategoriSet);
+    const newColorMap = {};
+    kategoriArr.forEach((kat, index) => {
+      newColorMap[kat] = colors[index % colors.length];
+    });
+
     setKategoriList(kategoriArr);
     setKategoriMap(map);
+    setColorMap(newColorMap);
     if (selectedKategori.length === 0) setSelectedKategori(kategoriArr);
 
     const grouped = {};
@@ -83,20 +147,22 @@ export default function StackedPDRBCard({ isLoading, data }) {
       const distribusi = toNumber(item['distribusi PDRB ADHB']);
 
       if (!grouped[th]) {
-        grouped[th] = { tahun: th };
+        grouped[th] = { tahun: th, total: 0 };
         kategoriArr.forEach((k) => {
           grouped[th][k] = { value: 0, distribusi: 0 };
         });
       }
       grouped[th][kat].value += val;
+      grouped[th].total += val;
       grouped[th][kat].distribusi = distribusi;
     });
 
     const result = Object.values(grouped).map((row) => {
-      const newRow = { tahun: row.tahun };
+      const newRow = { tahun: row.tahun, totalPDRB: row.total };
       kategoriArr.forEach((k) => {
         newRow[k] = row[k].value;
         newRow[`${k}_distribusi`] = row[k].distribusi;
+        newRow[`${k}_percentage`] = row.total > 0 ? (row[k].value / row.total) * 100 : 0;
       });
       return newRow;
     });
@@ -111,107 +177,224 @@ export default function StackedPDRBCard({ isLoading, data }) {
       if (!tahunAkhir) setTahunAkhir(tahunArr[tahunArr.length - 1]);
     }
 
-    if (data.length > 0) {
-      if (data[0].sumber) setSumber(data[0].sumber);
+    if (data.length > 0 && data[0].sumber) {
+      setSumber(data[0].sumber);
     }
   }, [data]);
 
   const filteredChartData = chartData.filter((d) => (!tahunAwal || d.tahun >= tahunAwal) && (!tahunAkhir || d.tahun <= tahunAkhir));
+  const filteredCatatan = Object.entries(catatanByTahun).filter(
+    ([tahun]) => (!tahunAwal || tahun >= tahunAwal) && (!tahunAkhir || tahun <= tahunAkhir)
+  );
 
-  // Logika baru untuk memfilter catatan berdasarkan rentang tahun
-  const filteredCatatan = Object.entries(catatanByTahun).filter(([tahun]) => {
-    return (!tahunAwal || tahun >= tahunAwal) && (!tahunAkhir || tahun <= tahunAkhir);
-  });
-
-  const colors = [
-    '#1f77b4',
-    '#ff7f0e',
-    '#2ca02c',
-    '#d62728',
-    '#9467bd',
-    '#8c564b',
-    '#e377c2',
-    '#7f7f7f',
-    '#bcbd22',
-    '#17becf',
-    '#393b79',
-    '#637939',
-    '#8c6d31',
-    '#843c39',
-    '#7b4173',
-    '#3182bd',
-    '#f7b6d2'
-  ];
-
-  const CustomTooltip = ({ active, payload, label }) => {
+  // Custom Tooltip
+  const CustomTooltip = ({ active, payload, label, onClose }) => {
     if (active && payload && payload.length) {
+      const total = payload[0]?.payload?.totalPDRB ?? 0;
+
+      const sortedPayload = payload
+        .filter((entry) => entry.name !== 'totalPDRB' && (entry.payload?.[entry.name] ?? 0) > 0)
+        .sort((a, b) => {
+          const distA = a.payload?.[`${a.name}_distribusi`] || 0;
+          const distB = b.payload?.[`${b.name}_distribusi`] || 0;
+          return distB - distA;
+        });
+
       return (
-        <div style={{ background: 'white', border: '1px solid #ccc', padding: 8 }}>
-          <strong>{label}</strong>
+        <Paper elevation={3} sx={{ p: 1.5, position: 'relative' }}>
+          {/* Header dengan Tahun + tombol close */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 1
+            }}
+          >
+            <Typography variant="body2" component="div">
+              <strong>{label}</strong>
+            </Typography>
+            {onClose && (
+              <IconButton size="small" onClick={onClose} sx={{ ml: 1 }} aria-label="close">
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
+
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>
+            Total PDRB: Rp
+            {total.toLocaleString('id-ID', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}{' '}
+            miliar
+          </Typography>
+
           <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-            {payload.map((entry, idx) => {
-              const distribusiVal = entry.payload?.[`${entry.name}_distribusi`] || 0;
-              const formattedValue = entry.value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-              const formattedDistribusi = distribusiVal.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            {sortedPayload.map((entry) => {
+              const value = entry.payload?.[entry.name];
+              const distribusi = entry.payload?.[`${entry.name}_distribusi`];
               return (
-                <li key={idx} style={{ color: entry.color }}>
-                  {entry.name}: Rp{formattedValue} miliar ({formattedDistribusi}%)
+                <li
+                  key={entry.name}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    margin: '4px 0'
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      bgcolor: entry.color,
+                      borderRadius: '50%',
+                      mr: 1.5
+                    }}
+                  />
+                  <Typography variant="caption">
+                    {entry.name}: Rp
+                    {(value ?? 0).toLocaleString('id-ID', {
+                      minimumFractionDigits: 2
+                    })}{' '}
+                    miliar (
+                    {(distribusi ?? 0).toLocaleString('id-ID', {
+                      maximumFractionDigits: 2
+                    })}
+                    %)
+                  </Typography>
                 </li>
               );
             })}
           </ul>
-        </div>
+        </Paper>
       );
     }
     return null;
   };
 
+  // Tooltip manual berdasarkan state klik
+  const RenderClickedTooltip = ({ activeTooltip, selectedKategori, colorMap, onClose }) => {
+    if (!activeTooltip) return null;
+    const tahun = activeTooltip.tahun;
+    const payload = Object.keys(activeTooltip)
+      .filter((key) => selectedKategori.includes(key))
+      .map((key) => ({
+        name: key,
+        color: colorMap[key],
+        payload: activeTooltip
+      }));
+
+    return (
+      <Box sx={{ mt: 2 }}>
+        <CustomTooltip active={true} payload={payload} label={tahun} onClose={onClose} />
+      </Box>
+    );
+  };
+
+  // Handler klik chart
+  const handleChartClick = (e) => {
+    if (e && e.activePayload && e.activePayload[0]) {
+      const clickedData = e.activePayload[0].payload;
+      if (activeTooltip && activeTooltip.tahun === clickedData.tahun) {
+        setActiveTooltip(null);
+      } else {
+        setActiveTooltip(clickedData);
+      }
+    }
+  };
+
+  // CustomLegend (versi modern)
   const CustomLegend = () => {
+    const handleCheckAll = () => {
+      setSelectedKategori(selectedKategori.length === kategoriList.length ? [] : kategoriList);
+    };
+
+    const handleCheckItem = (kat) => {
+      setSelectedKategori(selectedKategori.includes(kat) ? selectedKategori.filter((x) => x !== kat) : [...selectedKategori, kat]);
+    };
+
     return (
       <Paper
-        elevation={1}
+        elevation={0}
         sx={{
-          p: 0,
-          mt: isMobile ? 2 : 0,
-          ml: isMobile ? 0 : 0,
-          mb: isMobile ? 2 : 0,
-          flex: isMobile ? '0 0 auto' : '0 0 220px',
+          flex: isMobile ? '0 0 auto' : '0 0 240px',
           maxHeight: chartHeight - 30,
-          overflowY: 'auto',
-          borderRadius: 2
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 2,
+          border: '1px solid',
+          borderColor: 'divider',
+          overflow: 'hidden',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
         }}
       >
-        <Box
+        <Typography
+          variant="subtitle2"
           sx={{
-            position: 'sticky',
-            top: 0,
-            bgcolor: 'background.paper',
-            zIndex: 2,
             p: 1,
+            fontWeight: 600,
             borderBottom: '1px solid',
             borderColor: 'divider',
-            boxShadow: '0px 2px 4px rgba(0,0,0,0.05)'
+            bgcolor: 'grey.50'
           }}
         >
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            Kategori Lapangan Usaha
-          </Typography>
-        </Box>
+          Kategori Lapangan Usaha
+        </Typography>
 
-        <Box sx={{ pb: 2, pt: 1, pl: 2, pr: 2 }}>
-          {selectedKategori.map((kat, idx) => {
-            const color = colors[idx % colors.length];
-            const lapangan = kategoriMap[kat] || kat;
-            return (
-              <Box key={kat} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <Box sx={{ minWidth: 14, height: 14, bgcolor: color, borderRadius: 0.5, mr: 1 }} />
-                <Typography variant="caption" sx={{ color: theme.palette.text.primary }}>
-                  {kat} ({lapangan})
-                </Typography>
-              </Box>
-            );
-          })}
-        </Box>
+        <List
+          dense
+          sx={{
+            p: 0,
+            flex: 1,
+            overflowY: 'auto',
+            '& .MuiListItem-root': {
+              py: 0.3,
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              transition: 'background-color 0.2s ease',
+              '&:last-of-type': { borderBottom: 'none' },
+              '&:hover': { bgcolor: 'action.hover' }
+            }
+          }}
+        >
+          {/* Pilih semua */}
+          <ListItem onClick={handleCheckAll} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon sx={{ minWidth: 26 }}>
+              <Checkbox
+                size="small"
+                indeterminate={selectedKategori.length > 0 && selectedKategori.length < kategoriList.length}
+                checked={kategoriList.length > 0 && selectedKategori.length === kategoriList.length}
+              />
+            </ListItemIcon>
+            <ListItemText
+              primary={selectedKategori.length === kategoriList.length ? 'Semua Kategori' : 'Pilih Semua'}
+              primaryTypographyProps={{ variant: 'caption' }}
+            />
+          </ListItem>
+
+          {/* Item kategori */}
+          {kategoriList.map((kat) => (
+            <ListItem key={kat} onClick={() => handleCheckItem(kat)} sx={{ cursor: 'pointer' }}>
+              <ListItemIcon sx={{ minWidth: 26 }}>
+                <Checkbox
+                  size="small"
+                  checked={selectedKategori.includes(kat)}
+                  sx={{
+                    color: colorMap[kat],
+                    '&.Mui-checked': { color: colorMap[kat] }
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={kat}
+                secondary={kategoriMap[kat] || kat}
+                primaryTypographyProps={{ variant: 'body2' }}
+                secondaryTypographyProps={{ variant: 'caption' }}
+              />
+            </ListItem>
+          ))}
+        </List>
       </Paper>
     );
   };
@@ -219,139 +402,42 @@ export default function StackedPDRBCard({ isLoading, data }) {
   return (
     <Card sx={{ borderRadius: 2, height: '100%' }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, textAlign: 'center', color: theme.palette.text.primary }}>
-          PDRB Atas Dasar Harga Berlaku Menurut Lapangan Usaha di Kabupaten Sumba Barat
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 4, textAlign: 'center', color: theme.palette.primary.dark }}>
+          Produk Domestik Regional Bruto (PDRB) Atas Dasar Harga Berlaku (ADHB) Menurut Lapangan Usaha di Kabupaten Sumba Barat
         </Typography>
 
-        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-          <FormControl size="small" sx={{ minWidth: isMobile ? '100%' : 300 }}>
-            <InputLabel id="kategori-select-label" sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
-              Pilih Kategori Lapangan Usaha
-            </InputLabel>
-            <Select
-              labelId="kategori-select-label"
-              multiple
-              value={selectedKategori}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value.includes('ALL')) {
-                  if (selectedKategori.length === kategoriList.length) {
-                    setSelectedKategori([]);
-                  } else {
-                    setSelectedKategori(kategoriList);
-                  }
-                } else {
-                  setSelectedKategori(value);
-                }
-              }}
-              input={<OutlinedInput label="Pilih Kategori Lapangan Usaha" />}
-              renderValue={(selected) => selected.join(', ')}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: 300,
-                    width: 'auto',
-                    overflowX: 'auto',
-                    whiteSpace: 'nowrap',
-                    fontSize: isMobile ? '0.75rem' : '0.875rem'
-                  }
-                },
-                anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-                transformOrigin: { vertical: 'top', horizontal: 'left' }
-              }}
-              sx={{
-                '& .MuiSelect-select': {
-                  fontSize: isMobile ? '0.75rem' : '0.875rem'
-                }
-              }}
-            >
-              <MenuItem
-                value="ALL"
-                disableRipple
-                sx={{
-                  bgcolor: selectedKategori.length === kategoriList.length ? 'error.light' : 'success.light',
-                  borderRadius: 1,
-                  '&:hover': { bgcolor: selectedKategori.length === kategoriList.length ? 'error.light' : 'success.light' },
-                  fontSize: isMobile ? '0.75rem' : '0.875rem'
-                }}
-              >
-                <Checkbox
-                  indeterminate={selectedKategori.length > 0 && selectedKategori.length < kategoriList.length}
-                  checked={kategoriList.length > 0 && selectedKategori.length === kategoriList.length}
-                  sx={{
-                    color: selectedKategori.length === kategoriList.length ? 'error.main' : 'success.main',
-                    '& .MuiSvgIcon-root': { fontSize: isMobile ? 16 : 20 }
-                  }}
-                />
-                <ListItemText
-                  primary={
-                    selectedKategori.length === kategoriList.length
-                      ? 'Hapus Semua Kategori Lapangan Usaha'
-                      : 'Pilih Semua Kategori Lapangan Usaha'
-                  }
-                  primaryTypographyProps={{
-                    sx: {
-                      fontWeight: 600,
-                      color: selectedKategori.length === kategoriList.length ? 'error.main' : 'success.main',
-                      fontSize: isMobile ? '0.75rem' : '0.875rem',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden'
-                    }
-                  }}
-                />
-              </MenuItem>
-
-              {kategoriList.map((kat) => (
-                <MenuItem key={kat} value={kat} sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
-                  <Checkbox checked={selectedKategori.indexOf(kat) > -1} sx={{ '& .MuiSvgIcon-root': { fontSize: isMobile ? 16 : 20 } }} />
-                  <ListItemText
-                    primary={`${kat} (${kategoriMap[kat] || kat})`}
-                    primaryTypographyProps={{
-                      sx: {
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        fontSize: isMobile ? '0.75rem' : '0.875rem'
-                      }
-                    }}
-                  />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl size="small" sx={{ minWidth: 160 }}>
-            <InputLabel id="chart-type-label">Jenis Grafik</InputLabel>
-            <Select labelId="chart-type-label" value={chartType} label="Jenis Grafik" onChange={(e) => setChartType(e.target.value)}>
-              <MenuItem value="area">Stacked Area</MenuItem>
+        {/* Filter */}
+        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2, mb: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 160, flex: 1 }}>
+            <InputLabel>Jenis Grafik</InputLabel>
+            <Select value={chartType} label="Jenis Grafik" onChange={(e) => setChartType(e.target.value)}>
+              <MenuItem value="stacked_bar_100">Stacked Bar 100%</MenuItem>
+              <MenuItem value="stacked_bar">Stacked Bar</MenuItem>
               <MenuItem value="line">Line Chart</MenuItem>
             </Select>
           </FormControl>
-
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel id="tahun-awal-label">Tahun Awal</InputLabel>
+          <FormControl size="small" sx={{ minWidth: 120, flex: 1 }}>
+            <InputLabel>Tahun Awal</InputLabel>
             <Select
-              labelId="tahun-awal-label"
               value={tahunAwal}
               label="Tahun Awal"
               onChange={(e) => {
-                const newTahunAwal = e.target.value;
-                setTahunAwal(newTahunAwal);
-                if (tahunAkhir && tahunAkhir <= newTahunAwal) {
-                  setTahunAkhir('');
-                }
+                setTahunAwal(e.target.value);
+                if (tahunAkhir && tahunAkhir <= e.target.value) setTahunAkhir('');
               }}
             >
-              {tahunList.map((th) => (
-                <MenuItem key={th} value={th}>
-                  {th}
-                </MenuItem>
-              ))}
+              {tahunList
+                .filter((th) => !tahunAkhir || th < tahunAkhir)
+                .map((th) => (
+                  <MenuItem key={th} value={th}>
+                    {th}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
-
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel id="tahun-akhir-label">Tahun Akhir</InputLabel>
-            <Select labelId="tahun-akhir-label" value={tahunAkhir} label="Tahun Akhir" onChange={(e) => setTahunAkhir(e.target.value)}>
+          <FormControl size="small" sx={{ minWidth: 120, flex: 1 }}>
+            <InputLabel>Tahun Akhir</InputLabel>
+            <Select value={tahunAkhir} label="Tahun Akhir" onChange={(e) => setTahunAkhir(e.target.value)}>
               {tahunList
                 .filter((th) => th > tahunAwal)
                 .map((th) => (
@@ -363,58 +449,45 @@ export default function StackedPDRBCard({ isLoading, data }) {
           </FormControl>
         </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            flex: 1,
-            minHeight: chartHeight
-          }}
-        >
+        {/* Chart */}
+        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flex: 1, minHeight: chartHeight }}>
           <CustomLegend />
-          <Box sx={{ flex: 1, minHeight: chartHeight }}>
+          <Box sx={{ flex: 1, ml: isMobile ? 0 : 2, mt: isMobile ? 2 : 0 }}>
             {filteredChartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={chartHeight}>
-                {chartType === 'area' ? (
-                  <AreaChart data={filteredChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                    <XAxis dataKey="tahun" />
-                    <YAxis tickFormatter={(val) => `Rp${val.toLocaleString('id-ID')}`} width={isMobile ? 60 : 80} />
-                    <Tooltip content={<CustomTooltip />} />
-                    {selectedKategori.map((kat, idx) => (
-                      <Area
-                        key={kat}
-                        type="monotone"
-                        dataKey={kat}
-                        stackId="1"
-                        stroke={colors[idx % colors.length]}
-                        fill={colors[idx % colors.length]}
-                        name={kat}
-                      />
-                    ))}
-                  </AreaChart>
-                ) : (
-                  <LineChart data={filteredChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                    <XAxis dataKey="tahun" />
-                    <YAxis tickFormatter={(val) => `Rp${val.toLocaleString('id-ID')}`} width={isMobile ? 60 : 80} />
-                    <Tooltip content={<CustomTooltip />} />
-                    {selectedKategori.map((kat, idx) => (
-                      <Line
-                        key={kat}
-                        type="monotone"
-                        dataKey={kat}
-                        stroke={colors[idx % colors.length]}
-                        name={kat}
-                        dot={{ r: 3, fill: colors[idx % colors.length], stroke: colors[idx % colors.length] }}
-                        activeDot={{
-                          r: 4,
-                          fill: colors[idx % colors.length],
-                          stroke: colors[idx % colors.length]
-                        }}
-                      />
-                    ))}
-                  </LineChart>
-                )}
-              </ResponsiveContainer>
+              <>
+                <ResponsiveContainer width="100%" height={chartHeight}>
+                  {chartType === 'stacked_bar_100' ? (
+                    <BarChart data={filteredChartData} onClick={handleChartClick}>
+                      <XAxis dataKey="tahun" />
+                      <YAxis tickFormatter={(val) => `${val.toFixed(0)}%`} domain={[0, 100]} />
+                      <Tooltip content={<CustomTooltip />} trigger="none" />
+                      {selectedKategori.map((kat) => (
+                        <Bar key={kat} dataKey={`${kat}_percentage`} stackId="a" fill={colorMap[kat]} name={kat} />
+                      ))}
+                    </BarChart>
+                  ) : chartType === 'stacked_bar' ? (
+                    <ComposedChart data={filteredChartData} onClick={handleChartClick}>
+                      <XAxis dataKey="tahun" />
+                      <YAxis tickFormatter={(val) => `Rp${val.toLocaleString('id-ID')}`} />
+                      <Tooltip content={<CustomTooltip />} trigger="none" />
+                      {selectedKategori.map((kat) => (
+                        <Bar key={kat} dataKey={kat} stackId="a" fill={colorMap[kat]} name={kat} />
+                      ))}
+                      <Line type="monotone" dataKey="totalPDRB" stroke="#000" strokeWidth={2} dot={{ r: 3 }} label={<TotalBarLabel />} />
+                    </ComposedChart>
+                  ) : (
+                    <LineChart data={filteredChartData} onClick={handleChartClick}>
+                      <XAxis dataKey="tahun" />
+                      <YAxis tickFormatter={(val) => `Rp${val.toLocaleString('id-ID')}`} />
+                      <Tooltip content={<CustomTooltip />} trigger="none" />
+                      {selectedKategori.map((kat) => (
+                        <Line key={kat} type="monotone" dataKey={kat} stroke={colorMap[kat]} dot={{ r: 3 }} activeDot={{ r: 4 }} />
+                      ))}
+                    </LineChart>
+                  )}
+                </ResponsiveContainer>
+                <RenderClickedTooltip />
+              </>
             ) : (
               <Typography variant="body2" color="text.secondary">
                 Belum ada data
@@ -423,26 +496,25 @@ export default function StackedPDRBCard({ isLoading, data }) {
           </Box>
         </Box>
 
+        {/* Sumber & Catatan */}
         {sumber && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'left', fontStyle: 'italic' }}>
+          <Typography variant="caption" sx={{ mt: 1, fontStyle: 'italic' }}>
             Sumber: {sumber}
           </Typography>
         )}
-
-        {/* Tampilan catatan yang sudah difilter */}
         {filteredCatatan.length > 0 ? (
           <>
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left', fontStyle: 'italic' }}>
+            <Typography variant="caption" sx={{ mt: 0.5, fontStyle: 'italic' }}>
               Catatan:
             </Typography>
             {filteredCatatan.map(([tahun, cttn]) => (
-              <Typography key={tahun} variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left' }}>
+              <Typography key={tahun} variant="caption">
                 {tahun} {cttn}
               </Typography>
             ))}
           </>
         ) : (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, textAlign: 'left', fontStyle: 'italic' }}>
+          <Typography variant="caption" sx={{ mt: 0.5, fontStyle: 'italic' }}>
             Catatan: -
           </Typography>
         )}

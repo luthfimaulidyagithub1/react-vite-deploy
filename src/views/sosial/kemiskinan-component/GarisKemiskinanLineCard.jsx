@@ -134,8 +134,8 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
                 color: 'text.secondary'
               }}
             >
-              Menurut BPS, garis kemiskinan adalah rata-rata pengeluaran minimum per kapita per bulan untuk memenuhi kebutuhan makanan
-              setara 2.100 kilokalori per kapita per hari dan kebutuhan dasar non-makanan (perumahan, sandang, pendidikan, kesehatan, dsb).
+              Menurut BPS, garis kemiskinan adalah rata-rata pengeluaran minimum per orang per bulan untuk memenuhi kebutuhan makanan setara
+              2.100 kilokalori per orang per hari dan kebutuhan dasar non-makanan (perumahan, sandang, pendidikan, kesehatan, dsb).
             </Typography>
 
             {/* Dropdown Filter Tahun */}
@@ -252,8 +252,8 @@ export default function GarisKemiskinanLineCard({ data = [], isLoading }) {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Artinya: Pada tahun <b>{selectedPoint.tahun}</b>, rata-rata kebutuhan minimum pengeluaran penduduk Kab. Sumba Barat
-                      yang tidak dikategorikan miskin sebesar <b>Rp{formatNumber(selectedPoint.nilai)}</b> per kapita per bulan. <br />
-                      Penduduk dengan rata-rata pengeluaran per kapita per bulan di bawah angka tersebut dikategorikan sebagai penduduk
+                      yang tidak dikategorikan miskin sebesar <b>Rp{formatNumber(selectedPoint.nilai)}</b> per orang per bulan. <br />
+                      Penduduk dengan rata-rata pengeluaran per orang per bulan di bawah angka tersebut dikategorikan sebagai penduduk
                       miskin. <br /> Semakin tinggi nilainya, semakin besar biaya hidup minimum yang harus dipenuhi.
                     </Typography>
                   </>
