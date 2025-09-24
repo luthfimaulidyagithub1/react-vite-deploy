@@ -185,8 +185,6 @@ export default function Geografi() {
           <Grid item xs={12} md={6} lg={4}>
             <TotalDesaCard isLoading={isLoading} data={json11} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={6} lg={4}>
             <PersentaseLuasKabCard isLoading={isLoading} data={json} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>

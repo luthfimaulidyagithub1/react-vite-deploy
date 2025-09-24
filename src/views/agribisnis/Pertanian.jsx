@@ -131,13 +131,13 @@ export default function Pendidikan() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <LuasPanenPertanianCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <ProduksiPertanianCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <ProduktivitasPadiCard isLoading={isLoading} data={json53} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

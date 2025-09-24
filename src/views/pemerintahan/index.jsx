@@ -161,18 +161,18 @@ export default function Pemerintahan() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <DusunCard isLoading={isLoading} data={json211} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <RWCard isLoading={isLoading} data={json211} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <RTCard isLoading={isLoading} data={json211} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={12}>
+          <Grid item xs={12} md={12} lg={12}>
             <BarStrukturDesaCard isLoading={isLoading} data={json211} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

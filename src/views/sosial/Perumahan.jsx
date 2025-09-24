@@ -184,40 +184,38 @@ export default function Perumahan() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <AirMinumTerbanyakCard isLoading={isLoading} data={json431} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahDesaJambanCard isLoading={isLoading} data={json434} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <PersentaseListrikCard isLoading={isLoading} data={json432} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={12}>
+          <Grid item xs={12} md={12} lg={12}>
             <BarDesaAirMinumCard isLoading={isLoading} data={json431} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <PieListrikCard isLoading={isLoading} data={json432} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <PieJenisListrikCard isLoading={isLoading} data={json432} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <PiePeneranganJalanCard isLoading={isLoading} data={json433} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <PieFasilitasBABCard isLoading={isLoading} data={json434} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <PieJambanCard isLoading={isLoading} data={json434} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <PieJenisBBMCard isLoading={isLoading} data={json435} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

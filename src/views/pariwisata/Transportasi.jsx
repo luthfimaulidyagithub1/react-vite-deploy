@@ -158,13 +158,13 @@ export default function Transportasi() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <TransportasiTerbanyakCard isLoading={isLoading} data={json621} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <PermukaanJalanCard isLoading={isLoading} data={json623} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <KondisiJalanCard isLoading={isLoading} data={json624} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

@@ -134,13 +134,13 @@ export default function Keuangan() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBankUmumCard isLoading={isLoading} data={json712} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBankUmumSwastaCard isLoading={isLoading} data={json712} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBPRCard isLoading={isLoading} data={json712} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

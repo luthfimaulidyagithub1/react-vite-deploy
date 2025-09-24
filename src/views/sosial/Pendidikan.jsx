@@ -154,13 +154,13 @@ export default function Pendidikan() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahSekolahCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahSekolahNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahSekolahSwastaCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
@@ -192,13 +192,13 @@ export default function Pendidikan() {
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahMuridNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahMuridSwastaCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

@@ -147,10 +147,10 @@ export default function Perdagangan() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid item xs={12} md={6} lg={6}>
             <RataRataMakananCard isLoading={isLoading} data={json101} tahun={tahun} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid item xs={12} md={6} lg={6}>
             <RataRataBukanMakananCard isLoading={isLoading} data={json101} tahun={tahun} />
           </Grid>
         </Grid>

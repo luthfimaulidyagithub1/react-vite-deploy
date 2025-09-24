@@ -146,60 +146,38 @@ export default function BencanaAlam() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBencanaAlamCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBencanaGempaCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBencanaLongsorCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBencanaBanjirCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBencanaKekeringanCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahBencanaAnginCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid item xs={12} md={6} lg={6}>
             <PieBencanaCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid item xs={12} md={6} lg={6}>
             <PieKorbanBencanaCard isLoading={isLoading} data={json442} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={12} lg={12}>
             <TabelMitigasiBencanaCard isLoading={isLoading} data={json444} tahun={tahun} kecamatan={selectedKecamatan} />
-          </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            {/* <StackedGuruCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahMuridNegeriCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={4}>
-            {/* <JumlahMuridSwastaCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={12} lg={6}>
-            {/* <DonutMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
-          </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            {/* <StackedMuridCard isLoading={isLoading} data={json412} tahun={tahun} kecamatan={selectedKecamatan} /> */}
           </Grid>
         </Grid>
       </CardContent>

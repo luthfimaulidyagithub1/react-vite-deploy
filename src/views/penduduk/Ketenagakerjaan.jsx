@@ -129,18 +129,18 @@ export default function Ketenagakerjaan() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={12} lg={4}>
             <PieAngkatanKerjaCard isLoading={isLoading} data={json321} tahun={tahun} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={12} lg={4}>
             <PieAKCard isLoading={isLoading} data={json321} tahun={tahun} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={12} lg={4}>
             <PieBAKCard isLoading={isLoading} data={json321} tahun={tahun} />
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={12}>
+          <Grid item xs={12} md={12} lg={12}>
             <BarKegiatanJKCard isLoading={isLoading} data={json321} tahun={tahun} />
           </Grid>
         </Grid>

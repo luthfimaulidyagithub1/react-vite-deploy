@@ -142,13 +142,13 @@ export default function Pariwisata() {
         </Box>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahHotelCard isLoading={isLoading} data={json611} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahPenginapanCard isLoading={isLoading} data={json611} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={4} lg={4}>
             <JumlahRestoranCard isLoading={isLoading} data={json71} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

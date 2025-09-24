@@ -142,7 +142,7 @@ export default function Energi() {
           </Stack>
         </Box>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={12}>
+          <Grid item xs={12} md={12} lg={12}>
             <PiePelangganListrikCard isLoading={isLoading} data={json62} tahun={tahun} />
           </Grid>
         </Grid>

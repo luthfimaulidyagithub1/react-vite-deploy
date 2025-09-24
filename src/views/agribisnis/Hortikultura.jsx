@@ -160,8 +160,6 @@ export default function Pendidikan() {
           <Grid item xs={12} md={6} lg={4}>
             <LuasPanenBiofarmakaCard isLoading={isLoading} data={json511} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-        </Grid>
-        <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={6} lg={4}>
             <ProduksiSayuranCard isLoading={isLoading} data={json512} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
