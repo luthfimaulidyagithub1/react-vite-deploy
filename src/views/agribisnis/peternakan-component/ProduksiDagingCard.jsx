@@ -62,7 +62,7 @@ export default function ProduksiDagingCard({ isLoading, data, tahun, kecamatan }
       (item) =>
         String(item.tahun) === String(tahun) &&
         String(item.kecamatan).toLowerCase() === String(kecamatan).toLowerCase() &&
-        String(item.kategori).toLowerCase() === 'non unggas'
+        String(item.kategori).toLowerCase() != 'unggas'
     );
 
     // hitung total produksi

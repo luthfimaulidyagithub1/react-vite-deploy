@@ -1,4 +1,4 @@
-// PieNonUnggasCard.jsx
+// PieTernakBesarCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, Typography, Box } from '@mui/material';
@@ -16,7 +16,7 @@ const getTextColor = (hex) => {
   return luminance > 150 ? '#000' : '#fff';
 };
 
-export default function PieNonUnggasCard({ isLoading, data, tahun, kecamatan }) {
+export default function PieTernakBesarCard({ isLoading, data, tahun, kecamatan }) {
   const [chartData, setChartData] = useState([]);
   const [sumber, setSumber] = useState('');
   const theme = useTheme();
@@ -33,7 +33,7 @@ export default function PieNonUnggasCard({ isLoading, data, tahun, kecamatan }) 
       (item) =>
         String(item.tahun) === String(tahun) &&
         String(item.kecamatan).toLowerCase() === String(kecamatan).toLowerCase() &&
-        String(item.kategori).toLowerCase() === 'non unggas'
+        String(item.kategori).toLowerCase() === 'ternak besar'
     );
 
     // helper parse number
@@ -112,7 +112,7 @@ export default function PieNonUnggasCard({ isLoading, data, tahun, kecamatan }) 
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Judul */}
         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>
-          Distribusi Populasi Ternak Non Unggas di Kecamatan {kecamatan}, {tahun}
+          Distribusi Populasi Ternak Besar di Kecamatan {kecamatan}, {tahun}
         </Typography>
 
         {/* Chart */}
@@ -175,7 +175,7 @@ export default function PieNonUnggasCard({ isLoading, data, tahun, kecamatan }) 
   );
 }
 
-PieNonUnggasCard.propTypes = {
+PieTernakBesarCard.propTypes = {
   isLoading: PropTypes.bool,
   data: PropTypes.array,
   tahun: PropTypes.string,

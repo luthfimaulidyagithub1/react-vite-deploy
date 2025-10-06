@@ -11,7 +11,8 @@ import PopulasiNonUnggasCard from './peternakan-component/PopulasiNonUnggasCard'
 import PopulasiUnggasCard from './peternakan-component/PopulasiUnggasCard';
 import ProduksiDagingCard from './peternakan-component/ProduksiDagingCard';
 import ProduksiUnggasCard from './peternakan-component/ProduksiUnggasCard';
-import PieNonUnggasCard from './peternakan-component/PieNonUnggasCard';
+import PieTernakBesarCard from './peternakan-component/PieTernakBesarCard';
+import PieTernakKecilCard from './peternakan-component/PieTernakKecilCard';
 import PieUnggasCard from './peternakan-component/PieUnggasCard';
 import PieProduksiNonUnggasCard from './peternakan-component/PieProduksiNonUnggasCard';
 import PieProduksiUnggasCard from './peternakan-component/PieProduksiUnggasCard';
@@ -147,10 +148,13 @@ export default function Pendidikan() {
           </Grid>
         </Grid>
         <Grid container spacing={2} mt={0.5}>
-          <Grid item xs={12} md={6} lg={6}>
-            <PieNonUnggasCard isLoading={isLoading} data={json55} tahun={tahun} kecamatan={selectedKecamatan} />
+          <Grid item xs={12} md={12} lg={4}>
+            <PieTernakBesarCard isLoading={isLoading} data={json55} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
+          <Grid item xs={12} md={12} lg={4}>
+            <PieTernakKecilCard isLoading={isLoading} data={json55} tahun={tahun} kecamatan={selectedKecamatan} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={4}>
             <PieUnggasCard isLoading={isLoading} data={json55} tahun={tahun} kecamatan={selectedKecamatan} />
           </Grid>
         </Grid>

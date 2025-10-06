@@ -1,4 +1,4 @@
-// PieProduksiNonUnggasCard.jsx
+// PieTernakKecilCard.jsx
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, Typography, Box } from '@mui/material';
@@ -16,7 +16,7 @@ const getTextColor = (hex) => {
   return luminance > 150 ? '#000' : '#fff';
 };
 
-export default function PieProduksiNonUnggasCard({ isLoading, data, tahun, kecamatan }) {
+export default function PieTernakKecilCard({ isLoading, data, tahun, kecamatan }) {
   const [chartData, setChartData] = useState([]);
   const [sumber, setSumber] = useState('');
   const theme = useTheme();
@@ -33,7 +33,7 @@ export default function PieProduksiNonUnggasCard({ isLoading, data, tahun, kecam
       (item) =>
         String(item.tahun) === String(tahun) &&
         String(item.kecamatan).toLowerCase() === String(kecamatan).toLowerCase() &&
-        String(item.kategori).toLowerCase() != 'unggas'
+        String(item.kategori).toLowerCase() === 'ternak kecil'
     );
 
     // helper parse number
@@ -50,7 +50,7 @@ export default function PieProduksiNonUnggasCard({ isLoading, data, tahun, kecam
     const grouped = {};
     filtered.forEach((item) => {
       const key = item['ternak'] || 'Tidak Diketahui';
-      const jumlah = toNumber(item['produksi daging/unggas (kg)']);
+      const jumlah = toNumber(item['populasi']);
       if (!grouped[key]) grouped[key] = 0;
       grouped[key] += jumlah;
     });
@@ -112,7 +112,7 @@ export default function PieProduksiNonUnggasCard({ isLoading, data, tahun, kecam
       <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Judul */}
         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary, textAlign: 'center' }}>
-          Distribusi Produksi Daging (kg) di Kecamatan {kecamatan}, {tahun}
+          Distribusi Populasi Ternak Kecil di Kecamatan {kecamatan}, {tahun}
         </Typography>
 
         {/* Chart */}
@@ -140,9 +140,9 @@ export default function PieProduksiNonUnggasCard({ isLoading, data, tahun, kecam
                   <Tooltip
                     formatter={(value) =>
                       `${value.toLocaleString('id-ID', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                      })} kg`
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                      })} ekor`
                     }
                   />
                 </PieChart>
@@ -175,7 +175,7 @@ export default function PieProduksiNonUnggasCard({ isLoading, data, tahun, kecam
   );
 }
 
-PieProduksiNonUnggasCard.propTypes = {
+PieTernakKecilCard.propTypes = {
   isLoading: PropTypes.bool,
   data: PropTypes.array,
   tahun: PropTypes.string,
